@@ -19,7 +19,7 @@ package org.example.arithmetic.ref
  * @param out the byte output stream
  * @throws NullPointerException if the output stream is `null`
  */
-public class BitOutputStream(size: Int) {
+public class BitOutputBuffer(size: Int) {
     /*---- Fields ----*/ // The underlying byte stream to write to (not null).
     private val buffer = ByteArray(size)
     private var byteIndex = 0
