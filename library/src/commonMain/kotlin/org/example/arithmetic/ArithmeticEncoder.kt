@@ -60,22 +60,6 @@ public class ArithmeticEncoder(private val precision: Int = 32) {
     }
 }
 
-public class BitInputBuffer(private val data: ByteArray) {
-    private var bytePos = 0
-    private var bitPos = 0
-
-    public fun readBit(): Int {
-        if (bytePos >= data.size) return 0
-        val bit = (data[bytePos].toInt() shr (7 - bitPos)) and 1
-        bitPos++
-        if (bitPos == 8) {
-            bitPos = 0
-            bytePos++
-        }
-        return bit
-    }
-}
-
 
 public val information: ByteArray = """
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse efficitur dui neque, quis tempus nunc interdum nec. Suspendisse non malesuada ligula. Fusce malesuada massa ipsum. Quisque viverra nunc id tincidunt venenatis. Etiam fermentum consectetur sem, ut posuere arcu viverra eget. Ut non fermentum leo. Vivamus vehicula, lectus id volutpat finibus, sapien leo fermentum dui, sit amet consequat purus orci in nisi. Vivamus vel pellentesque turpis, id dapibus nulla.
