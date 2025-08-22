@@ -19,9 +19,9 @@ package org.example.arithmetic.ref
  * @throws NullPointerException if the output stream is `null`
  * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
  */
-public class ArithmeticEncoder(numBits: Int, out: BitOutputBuffer) : ArithmeticCoderBase(numBits) {
+public class ArithmeticEncoder(numBits: Int, buffer: BitOutputBuffer) : ArithmeticCoderBase(numBits) {
     /*---- Fields ----*/ // The underlying bit output stream (not null).
-    private val output: BitOutputBuffer = out
+    private val output: BitOutputBuffer = buffer
 
     // Number of saved underflow bits. This value can grow without bound,
     // so a truly correct implementation would use a BigInteger.
