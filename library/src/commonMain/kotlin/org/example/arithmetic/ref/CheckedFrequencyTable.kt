@@ -79,13 +79,15 @@ public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : Freq
 
     override fun set(symbol: Int, freq: Int) {
         freqTable.set(symbol, freq)
-        if (!isSymbolInRange(symbol) || freq < 0) throw java.lang.AssertionError("IllegalArgumentException expected")
+        check(isSymbolInRange(symbol) && freq >= 0) { "IllegalArgumentException expected" }
+        //if (!isSymbolInRange(symbol) || freq < 0) throw java.lang.AssertionError("IllegalArgumentException expected")
     }
 
 
     override fun increment(symbol: Int) {
         freqTable.increment(symbol)
-        if (!isSymbolInRange(symbol)) throw java.lang.AssertionError("IllegalArgumentException expected")
+        check(isSymbolInRange(symbol)) { "IllegalArgumentException expected" }
+        //if (!isSymbolInRange(symbol)) throw java.lang.AssertionError("IllegalArgumentException expected")
     }
 
 
