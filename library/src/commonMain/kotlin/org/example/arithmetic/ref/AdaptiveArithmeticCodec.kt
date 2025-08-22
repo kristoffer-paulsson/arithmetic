@@ -13,7 +13,7 @@ import org.example.arithmetic.ref.ArithmeticDecoder.read
 public object AdaptiveArithmeticCodec {
 
     // To allow unit testing, this method is package-private instead of private.
-    fun compress(src: BitInputBuffer, dst: BitOutputBuffer) {
+    public fun compress(src: BitInputBuffer, dst: BitOutputBuffer) {
         val initFreqs = FlatFrequencyTable(257)
         val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
         val enc = ArithmeticEncoder(32, dst)
@@ -29,7 +29,7 @@ public object AdaptiveArithmeticCodec {
     }
 
     // To allow unit testing, this method is package-private instead of private.
-    fun decompress(src: BitInputBuffer, dst: BitOutputBuffer) {
+    public fun decompress(src: BitInputBuffer, dst: BitOutputBuffer) {
         val initFreqs = FlatFrequencyTable(257)
         val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
         val dec = ArithmeticDecoder(32, src)
