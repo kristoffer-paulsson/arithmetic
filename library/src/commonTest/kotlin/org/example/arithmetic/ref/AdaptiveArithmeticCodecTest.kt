@@ -30,18 +30,17 @@ Vivamus maximus tempor consectetur. Duis varius, enim nec viverra volutpat, diam
 """.trimIndent().encodeToByteArray()
 
     @Test
-    fun testCompress() {
-        val size = information.size
+    fun testCompressDecompress() {
         val input = BitInputBuffer(information)
-        val output = BitOutputBuffer(size)
+        val output = BitOutputBuffer(information.size)
         AdaptiveArithmeticCodec.compress(input, output)
-        println("Original Data Size: ${size} bytes")
-        println("Compressed Data Size: ${output.toByteArray().size} bytes")
-        assertContentEquals(information, output.toByteArray())
-    }
 
-    @Test
-    fun testDecompress() {
-        // Implement your test for decompression here
+        // Now decompress
+        val decompressedOutput = BitOutputBuffer(information.size)
+        val decompressedInput = BitInputBuffer(output.toByteArray())
+        AdaptiveArithmeticCodec.decompress(decompressedInput, decompressedOutput)
+
+        // Verify that the decompressed data matches the original
+        assertContentEquals(information, decompressedOutput.toByteArray())
     }
 }
