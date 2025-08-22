@@ -108,7 +108,7 @@ public class BitInputBuffer( private val bytes: ByteArray) {
     public fun close() {
         closed = true
         byteIndex = bytes.size
-        currentByte = 0
+        currentByte = -1 // 0
         numBitsRemaining = 0
     }
 }
