@@ -91,13 +91,11 @@ public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : Arithmeti
     }
 
 
-    @Throws(java.io.IOException::class)
     override fun shift() {
         code = ((code shl 1) and stateMask) or readCodeBit().toLong()
     }
 
 
-    @Throws(java.io.IOException::class)
     override fun underflow() {
         code = (code and halfRange) or ((code shl 1) and (stateMask ushr 1)) or readCodeBit().toLong()
     }
@@ -105,7 +103,6 @@ public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : Arithmeti
 
     // Returns the next bit (0 or 1) from the input stream. The end
     // of stream is treated as an infinite number of trailing zeros.
-    @Throws(java.io.IOException::class)
     private fun readCodeBit(): Int {
         var temp: Int = input.read()
         if (temp == -1) temp = 0
