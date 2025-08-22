@@ -8,8 +8,6 @@
 
 package org.example.arithmetic.ref
 
-import org.example.arithmetic.ref.ArithmeticDecoder.read
-
 public object AdaptiveArithmeticCodec {
 
     // To allow unit testing, this method is package-private instead of private.
