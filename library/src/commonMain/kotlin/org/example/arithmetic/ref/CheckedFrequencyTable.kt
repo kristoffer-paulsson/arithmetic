@@ -26,8 +26,10 @@ public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : Freq
 
     override fun get(symbol: Int): Int {
         val result = freqTable.get(symbol)
-        if (!isSymbolInRange(symbol)) throw java.lang.AssertionError("IllegalArgumentException expected")
-        if (result < 0) throw java.lang.AssertionError("Negative symbol frequency")
+        check(isSymbolInRange(symbol)) { "IllegalArgumentException expected" }
+        check(result >= 0) { "Negative symbol frequency" }
+        //if (!isSymbolInRange(symbol)) throw java.lang.AssertionError("IllegalArgumentException expected")
+        //if (result < 0) throw java.lang.AssertionError("Negative symbol frequency")
         return result
     }
 
