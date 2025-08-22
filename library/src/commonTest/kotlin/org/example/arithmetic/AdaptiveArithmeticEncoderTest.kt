@@ -28,11 +28,10 @@ Vestibulum congue, urna nec dictum aliquet, nibh massa accumsan orci, sit amet p
 Vivamus maximus tempor consectetur. Duis varius, enim nec viverra volutpat, diam justo semper metus, non lobortis orci felis aliquet mi. Pellentesque et felis lacinia nulla aliquet lacinia finibus et eros. Quisque accumsan sapien vitae ex ultricies commodo. Proin accumsan tincidunt massa, ut consectetur nisi hendrerit in. Sed nec ante semper, porttitor felis in, posuere tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Sed tincidunt dolor ut pulvinar feugiat. Donec egestas, lorem nec scelerisque consectetur, purus lacus mattis ligula, vitae feugiat nulla dui eget augue. Aliquam imperdiet nunc quis mauris dapibus, et eleifend nisl dictum. Etiam ac metus.
 """.trimIndent().encodeToByteArray()
 
-    private val encoder = AdaptiveArithmeticEncoder()
-
     @Test
     fun testEncode() {
         val data = information
+        val encoder = AdaptiveArithmeticEncoder(inputSize = data.size)
         val encodedData = encoder.encode(data)
         println("Original Data Size: ${data.size} bytes")
         println("Encoded Data Size: ${encodedData.size} bytes")
@@ -42,10 +41,23 @@ Vivamus maximus tempor consectetur. Duis varius, enim nec viverra volutpat, diam
 
     @Test
     fun testFrequencyTable() {
+        val encoder = AdaptiveArithmeticEncoder(inputSize = information.size)
         val freqs = encoder.getFrequencyTable()
         println("Frequency Table: Total = ${freqs.getTotal()}, Symbol Limit = ${freqs.getSymbolLimit()}")
         for (i in 0 until freqs.getSymbolLimit()) {
             println("Symbol $i: Low = ${freqs.getLow(i)}, High = ${freqs.getHigh(i)}")
         }
+    }
+
+    @Test
+    fun testEncodeAndDecode() {
+        val data = information
+        val encoder = AdaptiveArithmeticEncoder(inputSize = data.size)
+        val encodedData = encoder.encode(data)
+        val freqs = encoder.getFrequencyTable()
+        val decoder = AdaptiveArithmeticDecoder(257, encodedData, freqs)
+        val decodedData = decoder.decode();
+        println("Decoded Data Size: ${decodedData.size} bytes")
+        println("Decoded Data Matches Original: ${data.contentEquals(decodedData)}")
     }
 }

@@ -1,6 +1,6 @@
 package org.example.arithmetic
 
-public class ArithmeticEncoder(private val precision: Int = 32) {
+public class ArithmeticEncoder(private val precision: Int = 32, private val outputSize: Int) {
     private val fullRange = (1L shl precision) - 1
     private val halfRange = 1L shl (precision - 1)
     private val quarterRange = halfRange shr 1
@@ -9,7 +9,7 @@ public class ArithmeticEncoder(private val precision: Int = 32) {
     private var high: Long = fullRange
     private var underflow = 0
 
-    private val output = BitOutputBuffer()
+    private val output = BitOutputBuffer(outputSize)
 
     public fun encodeSymbol(symbol: Int, freqs: FrequencyTable) {
         val total = freqs.getTotal()

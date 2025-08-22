@@ -1,7 +1,7 @@
 package org.example.arithmetic
 
-public class AdaptiveArithmeticEncoder(private val precision: Int = 32) {
-    private val encoder = ArithmeticEncoder(precision)
+public class AdaptiveArithmeticEncoder(private val precision: Int = 32, private val inputSize: Int) {
+    private val encoder = ArithmeticEncoder(precision, inputSize)
     private val freqs = AdaptiveFrequencyTable(257)
 
     public fun encode(data: ByteArray): ByteArray {
