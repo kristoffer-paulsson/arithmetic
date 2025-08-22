@@ -1,4 +1,13 @@
+/*
+ * Reference arithmetic coding
+ *
+ * Copyright (c) Project Nayuki
+ * MIT License. See readme file.
+ * https://www.nayuki.io/page/reference-arithmetic-coding
+ */
 package org.example.arithmetic.ref
+
+import kotlin.math.Math
 
 
 /**
@@ -36,7 +45,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         total = 0
         for (x in frequencies) {
             require(x >= 0) { "Negative frequency" }
-            total += x
+            total = Math.addExact(x, total)
         }
     }
 
@@ -59,7 +68,7 @@ public class SimpleFrequencyTable : FrequencyTable {
             val x = freqs.get(i)
             require(x >= 0) { "Negative frequency" }
             frequencies[i] = x
-            total += x
+            total = Math.addExact(x, total)
         }
     }
 
@@ -101,7 +110,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         val temp = total - frequencies[symbol]
         check(temp >= 0)
         //if (temp < 0) throw java.lang.AssertionError()
-        total = java.lang.Math.addExact(temp, freq)
+        total = Math.addExact(temp, freq)
         frequencies[symbol] = freq
         cumulative = intArrayOf()
     }
@@ -116,7 +125,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         checkSymbol(symbol)
         check(frequencies[symbol] != Int.Companion.MAX_VALUE) { "Arithmetic overflow" }
         // if (frequencies[symbol] == Int.Companion.MAX_VALUE) throw java.lang.ArithmeticException("Arithmetic overflow")
-        total = java.lang.Math.addExact(total, 1)
+        total = Math.addExact(total, 1)
         frequencies[symbol]++
         cumulative = intArrayOf()
     }
@@ -167,7 +176,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         for (i in frequencies.indices) {
             // This arithmetic should not throw an exception, because invariants are being maintained
             // elsewhere in the data structure. This implementation is just a defensive measure.
-            sum = java.lang.Math.addExact(frequencies[i], sum)
+            sum = Math.addExact(frequencies[i], sum)
             cumulative[i + 1] = sum
         }
         check(!(sum != total))
