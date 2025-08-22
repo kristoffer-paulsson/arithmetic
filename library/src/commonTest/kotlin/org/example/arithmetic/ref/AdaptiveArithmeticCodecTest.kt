@@ -1,6 +1,7 @@
 package org.example.arithmetic.ref
 
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 
 class AdaptiveArithmeticCodecTest {
 
@@ -36,7 +37,7 @@ Vivamus maximus tempor consectetur. Duis varius, enim nec viverra volutpat, diam
         AdaptiveArithmeticCodec.compress(input, output)
         println("Original Data Size: ${size} bytes")
         println("Compressed Data Size: ${output.toByteArray().size} bytes")
-        // assertEquals(expectedOutput, output.toByteArray())
+        assertContentEquals(information, output.toByteArray())
     }
 
     @Test
