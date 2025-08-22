@@ -36,7 +36,8 @@ public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : Freq
 
     override fun getTotal(): Int {
         val result = freqTable.getTotal()
-        if (result < 0) throw java.lang.AssertionError("Negative total frequency")
+        check(result >= 0) { "Negative total frequency" }
+        //if (result < 0) throw java.lang.AssertionError("Negative total frequency")
         return result
     }
 
