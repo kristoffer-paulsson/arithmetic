@@ -61,11 +61,13 @@ public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : Freq
         if (isSymbolInRange(symbol)) {
             val low = freqTable.getLow(symbol)
             val high = freqTable.getHigh(symbol)
-            if (!(0 <= low && low <= high && high <= freqTable.getTotal())) throw java.lang.AssertionError("Symbol high cumulative frequency out of range")
+            check(0 <= low && low <= high && high <= freqTable.getTotal()) { "Symbol high cumulative frequency out of range" }
+            //if (!(0 <= low && low <= high && high <= freqTable.getTotal())) throw java.lang.AssertionError("Symbol high cumulative frequency out of range")
             return high
         } else {
             freqTable.getHigh(symbol)
-            throw java.lang.AssertionError("IllegalArgumentException expected")
+            error("IllegalArgumentException expected")
+            //throw java.lang.AssertionError("IllegalArgumentException expected")
         }
     }
 
