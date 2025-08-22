@@ -78,7 +78,8 @@ public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : Arithmeti
             if (freqs.getLow(middle) > value) end = middle
             else start = middle
         }
-        if (start + 1 != end) throw java.lang.AssertionError()
+        check(!(start + 1 != end))
+        //if (start + 1 != end) throw java.lang.AssertionError()
 
         val symbol = start
         if (!(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)) throw java.lang.AssertionError()
