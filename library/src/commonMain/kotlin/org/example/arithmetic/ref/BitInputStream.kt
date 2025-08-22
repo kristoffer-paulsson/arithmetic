@@ -57,10 +57,13 @@ public class BitInputBuffer( private val bytes: ByteArray) {
      */
     public fun read(): Int {
         if (closed || byteIndex >= bytes.size) return -1
+        if (currentByte == -1) return -1 // Fix
         if (numBitsRemaining == 0) {
             currentByte = bytes[byteIndex++].toInt() and 0xFF
+            if (currentByte == -1) return -1 // Fix
             numBitsRemaining = 8
         }
+        check(!(numBitsRemaining <= 0)) // Fix
         numBitsRemaining--
         return (currentByte ushr numBitsRemaining) and 1
     }
