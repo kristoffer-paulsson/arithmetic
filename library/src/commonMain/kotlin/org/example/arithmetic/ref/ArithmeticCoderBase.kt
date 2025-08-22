@@ -113,7 +113,8 @@ public abstract class ArithmeticCoderBase(numBits: Int) {
         check(!(low >= high || (low and stateMask) != low || (high and stateMask) != high)) { "Low or high out of range" }
         //if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw java.lang.AssertionError("Low or high out of range")
         val range = high - low + 1
-        if (!(minimumRange <= range && range <= fullRange)) throw java.lang.AssertionError("Range out of range")
+        check(minimumRange <= range && range <= fullRange) { "Range out of range" }
+        //if (!(minimumRange <= range && range <= fullRange)) throw java.lang.AssertionError("Range out of range")
 
 
         // Frequency table values check
