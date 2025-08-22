@@ -1,3 +1,10 @@
+/*
+ * Reference arithmetic coding
+ *
+ * Copyright (c) Project Nayuki
+ * MIT License. See readme file.
+ * https://www.nayuki.io/page/reference-arithmetic-coding
+ */
 package org.example.arithmetic.ref
 
 
@@ -6,21 +13,13 @@ package org.example.arithmetic.ref
  * of all the frequency table methods. Useful for finding faults in a frequency table
  * implementation. However, arithmetic overflow conditions are not checked.
  */
-public class CheckedFrequencyTable(freq: FrequencyTable) : FrequencyTable {
-    /*---- Fields ----*/ // The underlying frequency table that holds the data (not null).
-    private val freqTable: FrequencyTable
-
-
-    /*---- Constructor ----*/
-    init {
-        freqTable = java.util.Objects.requireNonNull<FrequencyTable?>(freq)
-    }
-
+public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : FrequencyTable {
 
     /*---- Methods ----*/
     override fun getSymbolLimit(): Int {
         val result = freqTable.getSymbolLimit()
-        if (result <= 0) throw java.lang.AssertionError("Non-positive symbol limit")
+        check(result > 0) { "Non-positive symbol limit" }
+        //if (result <= 0) throw java.lang.AssertionError("Non-positive symbol limit")
         return result
     }
 

@@ -1,6 +1,3 @@
-package org.example.arithmetic.ref
-
-
 /*
  * Reference arithmetic coding
  *
@@ -8,6 +5,8 @@ package org.example.arithmetic.ref
  * MIT License. See readme file.
  * https://www.nayuki.io/page/reference-arithmetic-coding
  */
+package org.example.arithmetic.ref
+
 /**
  * A table of symbol frequencies. The table holds data for symbols numbered from 0
  * to getSymbolLimit()1. Each symbol has a frequency, which is a non-negative integer.
