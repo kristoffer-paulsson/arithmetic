@@ -73,7 +73,7 @@ public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : Freq
 
 
     override fun toString(): String {
-        return "CheckedFrequencyTable (" + freqTable.toString() + ")"
+        return "CheckedFrequencyTable ($freqTable)"
     }
 
 
