@@ -7,8 +7,6 @@
  */
 package org.example.arithmetic.ref
 
-import kotlin.math.Math
-
 
 /**
  * A mutable table of symbol frequencies. The number of symbols cannot be changed
@@ -45,7 +43,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         total = 0
         for (x in frequencies) {
             require(x >= 0) { "Negative frequency" }
-            total = Math.addExact(x, total)
+            total = addExact(x, total)
         }
     }
 
@@ -68,7 +66,7 @@ public class SimpleFrequencyTable : FrequencyTable {
             val x = freqs.get(i)
             require(x >= 0) { "Negative frequency" }
             frequencies[i] = x
-            total = Math.addExact(x, total)
+            total = addExact(x, total)
         }
     }
 
@@ -110,7 +108,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         val temp = total - frequencies[symbol]
         check(temp >= 0)
         //if (temp < 0) throw java.lang.AssertionError()
-        total = Math.addExact(temp, freq)
+        total = addExact(temp, freq)
         frequencies[symbol] = freq
         cumulative = intArrayOf()
     }
@@ -125,7 +123,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         checkSymbol(symbol)
         check(frequencies[symbol] != Int.Companion.MAX_VALUE) { "Arithmetic overflow" }
         // if (frequencies[symbol] == Int.Companion.MAX_VALUE) throw java.lang.ArithmeticException("Arithmetic overflow")
-        total = Math.addExact(total, 1)
+        total = addExact(total, 1)
         frequencies[symbol]++
         cumulative = intArrayOf()
     }
@@ -150,8 +148,8 @@ public class SimpleFrequencyTable : FrequencyTable {
      */
     override fun getLow(symbol: Int): Int {
         checkSymbol(symbol)
-        if (cumulative == null) initCumulative()
-        return cumulative!![symbol]
+        if (cumulative.isEmpty()) initCumulative()
+        return cumulative[symbol]
     }
 
 
@@ -176,7 +174,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         for (i in frequencies.indices) {
             // This arithmetic should not throw an exception, because invariants are being maintained
             // elsewhere in the data structure. This implementation is just a defensive measure.
-            sum = Math.addExact(frequencies[i], sum)
+            sum = addExact(frequencies[i], sum)
             cumulative[i + 1] = sum
         }
         check(!(sum != total))
@@ -199,5 +197,14 @@ public class SimpleFrequencyTable : FrequencyTable {
         val sb: StringBuilder = StringBuilder()
         //for (i in frequencies.indices) sb.append(String.format("%d\t%d%n", i, frequencies[i]))
         return sb.toString()
+    }
+
+    public fun addExact(x: Int, y: Int): Int {
+        val r = x + y
+        // HD 2-12 Overflow iff both arguments have the opposite sign of the result
+        if (((x xor r) and (y xor r)) < 0) {
+            throw ArithmeticException("integer overflow")
+        }
+        return r
     }
 }
