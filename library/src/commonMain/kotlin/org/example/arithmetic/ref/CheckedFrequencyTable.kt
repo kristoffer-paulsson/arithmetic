@@ -46,7 +46,8 @@ public class CheckedFrequencyTable(private val freqTable: FrequencyTable) : Freq
         if (isSymbolInRange(symbol)) {
             val low = freqTable.getLow(symbol)
             val high = freqTable.getHigh(symbol)
-            if (!(0 <= low && low <= high && high <= freqTable.getTotal())) throw java.lang.AssertionError("Symbol low cumulative frequency out of range")
+            check(0 <= low && low <= high && high <= freqTable.getTotal()) { "Symbol low cumulative frequency out of range" }
+            //if (!(0 <= low && low <= high && high <= freqTable.getTotal())) throw java.lang.AssertionError("Symbol low cumulative frequency out of range")
             return low
         } else {
             freqTable.getLow(symbol)
