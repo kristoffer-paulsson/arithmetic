@@ -118,9 +118,9 @@ public abstract class ArithmeticCoderBase(numBits: Int) {
 
 
         // Frequency table values check
-        val total: Long = freqs.getTotal()
-        val symLow: Long = freqs.getLow(symbol)
-        val symHigh: Long = freqs.getHigh(symbol)
+        val total: Long = freqs.getTotal().toLong()
+        val symLow: Long = freqs.getLow(symbol).toLong()
+        val symHigh: Long = freqs.getHigh(symbol).toLong()
         require(symLow != symHigh) { "Symbol has zero frequency" }
         require(total <= maximumTotal) { "Cannot code symbol because total is too large" }
 
