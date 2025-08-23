@@ -1,12 +1,14 @@
 /*
- * Reference arithmetic coding
- *
- * Copyright (c) Project Nayuki
- * MIT License. See readme file.
- * https://www.nayuki.io/page/reference-arithmetic-coding
- */
-package org.example.arithmetic.ref
+* Reference arithmetic coding
+*
+* Copyright (c) Project Nayuki
+* MIT License. See readme file.
+* https://www.nayuki.io/page/reference-arithmetic-coding
+*/
+package org.example.arithmetic
 
+
+import java.util.Objects
 
 /**
  * A mutable table of symbol frequencies. The number of symbols cannot be changed
@@ -19,7 +21,7 @@ public class SimpleFrequencyTable : FrequencyTable {
 
     // cumulative[i] is the sum of 'frequencies' from 0 (inclusive) to i (exclusive).
     // Initialized lazily. When this is not null, the data is valid.
-    private var cumulative: IntArray = intArrayOf()
+    private var cumulative: IntArray?
 
     // Always equal to the sum of 'frequencies'.
     private var total: Int
@@ -36,15 +38,17 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @throws ArithmeticException if the total of `freqs` exceeds `Integer.MAX_VALUE`
      */
     public constructor(freqs: IntArray) {
+        Objects.requireNonNull(freqs)
         require(freqs.size >= 1) { "At least 1 symbol needed" }
-        require(freqs.size <= Int.Companion.MAX_VALUE - 1) { "Too many symbols" }
+        require(!(freqs.size > Integer.MAX_VALUE - 1)) { "Too many symbols" }
 
         frequencies = freqs.clone() // Make copy
         total = 0
         for (x in frequencies) {
             require(x >= 0) { "Negative frequency" }
-            total = addExact(x, total)
+            total = Math.addExact(x, total)
         }
+        cumulative = null
     }
 
 
@@ -57,17 +61,19 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @throws ArithmeticException if the total of all `freqs` elements exceeds `Integer.MAX_VALUE`
      */
     public constructor(freqs: FrequencyTable) {
-        val numSym = freqs.getSymbolLimit()
+        Objects.requireNonNull(freqs)
+        val numSym: Int = freqs.getSymbolLimit()
         require(numSym >= 1) { "At least 1 symbol needed" }
 
         frequencies = IntArray(numSym)
         total = 0
         for (i in frequencies.indices) {
-            val x = freqs.get(i)
+            val x: Int = freqs.get(i)
             require(x >= 0) { "Negative frequency" }
             frequencies[i] = x
-            total = addExact(x, total)
+            total = Math.addExact(x, total)
         }
+        cumulative = null
     }
 
 
@@ -76,7 +82,7 @@ public class SimpleFrequencyTable : FrequencyTable {
      * Returns the number of symbols in this frequency table, which is at least 1.
      * @return the number of symbols in this frequency table
      */
-    override fun getSymbolLimit(): Int {
+    public override fun getSymbolLimit(): Int {
         return frequencies.size
     }
 
@@ -87,7 +93,7 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @return the frequency of the specified symbol
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun get(symbol: Int): Int {
+    public override fun get(symbol: Int): Int {
         checkSymbol(symbol)
         return frequencies[symbol]
     }
@@ -101,16 +107,15 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      * @throws ArithmeticException if this set request would cause the total to exceed `Integer.MAX_VALUE`
      */
-    override fun set(symbol: Int, freq: Int) {
+    public override fun set(symbol: Int, freq: Int) {
         checkSymbol(symbol)
         require(freq >= 0) { "Negative frequency" }
 
         val temp = total - frequencies[symbol]
-        check(temp >= 0)
-        //if (temp < 0) throw java.lang.AssertionError()
-        total = addExact(temp, freq)
+        if (temp < 0) throw AssertionError()
+        total = Math.addExact(temp, freq)
         frequencies[symbol] = freq
-        cumulative = intArrayOf()
+        cumulative = null
     }
 
 
@@ -119,13 +124,12 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @param symbol the symbol whose frequency to increment
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun increment(symbol: Int) {
+    public override fun increment(symbol: Int) {
         checkSymbol(symbol)
-        check(frequencies[symbol] != Int.Companion.MAX_VALUE) { "Arithmetic overflow" }
-        // if (frequencies[symbol] == Int.Companion.MAX_VALUE) throw java.lang.ArithmeticException("Arithmetic overflow")
-        total = addExact(total, 1)
+        if (frequencies[symbol] == Integer.MAX_VALUE) throw ArithmeticException("Arithmetic overflow")
+        total = Math.addExact(total, 1)
         frequencies[symbol]++
-        cumulative = intArrayOf()
+        cumulative = null
     }
 
 
@@ -134,7 +138,7 @@ public class SimpleFrequencyTable : FrequencyTable {
      * least 0 and is always equal to `getHigh(getSymbolLimit() - 1)`.
      * @return the total of all symbol frequencies
      */
-    override fun getTotal(): Int {
+    public override fun getTotal(): Int {
         return total
     }
 
@@ -146,10 +150,10 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @return the sum of the frequencies of all the symbols below `symbol`
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun getLow(symbol: Int): Int {
+    public override fun getLow(symbol: Int): Int {
         checkSymbol(symbol)
-        if (cumulative.isEmpty()) initCumulative()
-        return cumulative[symbol]
+        if (cumulative == null) initCumulative()
+        return cumulative!![symbol]
     }
 
 
@@ -160,10 +164,10 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @return the sum of the frequencies of `symbol` and all symbols below
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun getHigh(symbol: Int): Int {
+    public override fun getHigh(symbol: Int): Int {
         checkSymbol(symbol)
-        if (cumulative.isEmpty()) initCumulative()
-        return cumulative[symbol + 1]
+        if (cumulative == null) initCumulative()
+        return cumulative!![symbol + 1]
     }
 
 
@@ -174,11 +178,10 @@ public class SimpleFrequencyTable : FrequencyTable {
         for (i in frequencies.indices) {
             // This arithmetic should not throw an exception, because invariants are being maintained
             // elsewhere in the data structure. This implementation is just a defensive measure.
-            sum = addExact(frequencies[i], sum)
-            cumulative[i + 1] = sum
+            sum = Math.addExact(frequencies[i], sum)
+            cumulative!![i + 1] = sum
         }
-        check(!(sum != total))
-        //if (sum != total) throw java.lang.AssertionError()
+        if (sum != total) throw AssertionError()
     }
 
 
@@ -193,18 +196,9 @@ public class SimpleFrequencyTable : FrequencyTable {
      * useful for debugging only, and the format is subject to change.
      * @return a string representation of this frequency table
      */
-    override fun toString(): String {
-        val sb: StringBuilder = StringBuilder()
-        //for (i in frequencies.indices) sb.append(String.format("%d\t%d%n", i, frequencies[i]))
+    public override fun toString(): String {
+        val sb = StringBuilder()
+        for (i in frequencies.indices) sb.append(String.format("%d\t%d%n", i, frequencies[i]))
         return sb.toString()
-    }
-
-    public fun addExact(x: Int, y: Int): Int {
-        val r = x + y
-        // HD 2-12 Overflow iff both arguments have the opposite sign of the result
-        if (((x xor r) and (y xor r)) < 0) {
-            throw ArithmeticException("integer overflow")
-        }
-        return r
     }
 }

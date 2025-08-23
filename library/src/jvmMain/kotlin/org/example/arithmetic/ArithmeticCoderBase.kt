@@ -1,21 +1,21 @@
 /*
- * Reference arithmetic coding
- *
- * Copyright (c) Project Nayuki
- * MIT License. See readme file.
- * https://www.nayuki.io/page/reference-arithmetic-coding
- */
-package org.example.arithmetic.ref
+* Reference arithmetic coding
+*
+* Copyright (c) Project Nayuki
+* MIT License. See readme file.
+* https://www.nayuki.io/page/reference-arithmetic-coding
+*/
+package org.example.arithmetic
 
-import kotlin.math.min
+import java.io.IOException
 
 /**
  * Provides the state and behaviors that arithmetic coding encoders and decoders share.
- * @see org.example.arithmetic.ref.ArithmeticEncoder
+ * @see ArithmeticEncoder
  *
- * @see org.example.arithmetic.ref.ArithmeticDecoder
+ * @see ArithmeticDecoder
  */
-public abstract class ArithmeticCoderBase(numBits: Int) {
+public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
     /*---- Configuration fields ----*/
     /**
      * Number of bits for the 'low' and 'high' state variables. Must be in the range [1, 62].
@@ -78,7 +78,7 @@ public abstract class ArithmeticCoderBase(numBits: Int) {
         halfRange = fullRange ushr 1 // Non-zero
         quarterRange = halfRange ushr 1 // Can be zero
         minimumRange = quarterRange + 2 // At least 2
-        maximumTotal = min(Long.Companion.MAX_VALUE / fullRange, minimumRange)
+        maximumTotal = Math.min(Long.MAX_VALUE / fullRange, minimumRange)
         stateMask = fullRange - 1
 
         low = 0
@@ -108,19 +108,18 @@ public abstract class ArithmeticCoderBase(numBits: Int) {
      * @param symbol the symbol that was processed
      * @throws IllegalArgumentException if the symbol has zero frequency or the frequency table's total is too large
      */
+    @Throws(IOException::class)
     protected fun update(freqs: CheckedFrequencyTable, symbol: Int) {
         // State check
-        check(!(low >= high || (low and stateMask) != low || (high and stateMask) != high)) { "Low or high out of range" }
-        //if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw java.lang.AssertionError("Low or high out of range")
+        if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw AssertionError("Low or high out of range")
         val range = high - low + 1
-        check(minimumRange <= range && range <= fullRange) { "Range out of range" }
-        //if (!(minimumRange <= range && range <= fullRange)) throw java.lang.AssertionError("Range out of range")
+        if (!(minimumRange <= range && range <= fullRange)) throw AssertionError("Range out of range")
 
 
         // Frequency table values check
-        val total: Long = freqs.getTotal().toLong()
-        val symLow: Long = freqs.getLow(symbol).toLong()
-        val symHigh: Long = freqs.getHigh(symbol).toLong()
+        val total: Long = freqs.getTotal().toLong() // Fix
+        val symLow: Long = freqs.getLow(symbol).toLong() // Fix
+        val symHigh: Long = freqs.getHigh(symbol).toLong() // Fix
         require(symLow != symHigh) { "Symbol has zero frequency" }
         require(total <= maximumTotal) { "Cannot code symbol because total is too large" }
 
@@ -154,6 +153,7 @@ public abstract class ArithmeticCoderBase(numBits: Int) {
      * Called to handle the situation when the top bit of `low` and `high` are equal.
      * @throws IOException if an I/O exception occurred
      */
+    @Throws(IOException::class)
     protected abstract fun shift()
 
 
@@ -161,5 +161,6 @@ public abstract class ArithmeticCoderBase(numBits: Int) {
      * Called to handle the situation when low=01(...) and high=10(...).
      * @throws IOException if an I/O exception occurred
      */
+    @Throws(IOException::class)
     protected abstract fun underflow()
 }

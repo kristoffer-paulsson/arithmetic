@@ -1,12 +1,16 @@
 /*
- * Reference arithmetic coding
- *
- * Copyright (c) Project Nayuki
- * MIT License. See readme file.
- * https://www.nayuki.io/page/reference-arithmetic-coding
- */
-package org.example.arithmetic.ref
+* Reference arithmetic coding
+*
+* Copyright (c) Project Nayuki
+* MIT License. See readme file.
+* https://www.nayuki.io/page/reference-arithmetic-coding
+*/
+package org.example.arithmetic
 
+import java.io.EOFException
+import java.io.IOException
+import java.io.InputStream
+import java.util.Objects
 
 /**
  * A stream of bits that can be read. Because they come from an underlying byte stream,
@@ -14,21 +18,26 @@ package org.example.arithmetic.ref
  * Mutable and not thread-safe.
  * @see BitOutputStream
  */
-/**
- * Constructs a bit input stream based on the specified byte input stream.
- * @param in the byte input stream
- * @throws NullPointerException if the input stream is `null`
- */
-public class BitInputBuffer( private val bytes: ByteArray) {
+public class BitInputStream public constructor(`in`: InputStream) : AutoCloseable {
     /*---- Fields ----*/ // The underlying byte stream to read from (not null).
-
-    private var byteIndex = 0
+    private val input: InputStream
 
     // Either in the range [0x00, 0xFF] if bits are available, or -1 if end of stream is reached.
     private var currentByte = 0
 
     // Number of remaining bits in the current byte, always between 0 and 7 (inclusive).
     private var numBitsRemaining = 0
+
+
+    /*---- Constructor ----*/ /**
+     * Constructs a bit input stream based on the specified byte input stream.
+     * @param in the byte input stream
+     * @throws NullPointerException if the input stream is `null`
+     */
+    init {
+        input = Objects.requireNonNull(`in`)!!
+    }
+
 
     /*---- Methods ----*/
     /**
@@ -37,31 +46,15 @@ public class BitInputBuffer( private val bytes: ByteArray) {
      * @return the next bit of 0 or 1, or -1 for the end of stream
      * @throws IOException if an I/O exception occurred
      */
-    /*fun read(): Int {
+    @Throws(IOException::class)
+    public fun read(): Int {
         if (currentByte == -1) return -1
         if (numBitsRemaining == 0) {
             currentByte = input.read()
             if (currentByte == -1) return -1
             numBitsRemaining = 8
         }
-        if (numBitsRemaining <= 0) throw java.lang.AssertionError()
-        numBitsRemaining--
-        return (currentByte ushr numBitsRemaining) and 1
-    }*/
-
-    /**
-     * Reads a bit from the buffer. Returns 0 or 1 if a bit is available, or -1 if
-     * the end of buffer is reached. The end always occurs on a byte boundary.
-     */
-    public fun read(): Int {
-        if (byteIndex >= bytes.size) return -1
-        if (currentByte == -1) return -1 // Fix
-        if (numBitsRemaining == 0) {
-            currentByte = bytes[byteIndex++].toInt() and 0xFF
-            if (currentByte == -1) return -1 // Fix
-            numBitsRemaining = 8
-        }
-        check(!(numBitsRemaining <= 0)) // Fix
+        if (numBitsRemaining <= 0) throw AssertionError()
         numBitsRemaining--
         return (currentByte ushr numBitsRemaining) and 1
     }
@@ -74,21 +67,11 @@ public class BitInputBuffer( private val bytes: ByteArray) {
      * @throws IOException if an I/O exception occurred
      * @throws EOFException if the end of stream is reached
      */
-    /*@Throws(java.io.IOException::class)
-    fun readNoEof(): Int {
-        val result = read()
-        if (result != -1) return result
-        else throw java.io.EOFException()
-    }*/
-
-    /**
-     * Reads a bit from the buffer. Returns 0 or 1 if a bit is available, or throws
-     * an exception if the end of buffer is reached.
-     */
+    @Throws(IOException::class)
     public fun readNoEof(): Int {
         val result = read()
         if (result != -1) return result
-        else throw NoSuchElementException("End of buffer reached")
+        else throw EOFException()
     }
 
 
@@ -96,19 +79,10 @@ public class BitInputBuffer( private val bytes: ByteArray) {
      * Closes this stream and the underlying input stream.
      * @throws IOException if an I/O exception occurred
      */
-    /*@Throws(java.io.IOException::class)
-    override fun close() {
+    @Throws(IOException::class)
+    public override fun close() {
         input.close()
         currentByte = -1
-        numBitsRemaining = 0
-    }*/
-
-    /**
-     * Closes the buffer and resets state.
-     */
-    public fun close() {
-        byteIndex = bytes.size
-        currentByte = -1 // 0
         numBitsRemaining = 0
     }
 }

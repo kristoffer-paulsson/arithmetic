@@ -1,20 +1,22 @@
 /*
- * Reference arithmetic coding
- *
- * Copyright (c) Project Nayuki
- * MIT License. See readme file.
- * https://www.nayuki.io/page/reference-arithmetic-coding
- */
-package org.example.arithmetic.ref
+* Reference arithmetic coding
+*
+* Copyright (c) Project Nayuki
+* MIT License. See readme file.
+* https://www.nayuki.io/page/reference-arithmetic-coding
+*/
+package org.example.arithmetic
 
+import java.io.IOException
+import java.util.Objects
 
 /**
  * Reads from an arithmetic-coded bit stream and decodes symbols. Not thread-safe.
  * @see ArithmeticEncoder
  */
-public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : ArithmeticCoderBase(numBits) {
+public class ArithmeticDecoder public constructor(numBits: Int, `in`: BitInputStream) : ArithmeticCoderBase(numBits) {
     /*---- Fields ----*/ // The underlying bit input stream (not null).
-    private val input: BitInputBuffer = buffer
+    private val input: BitInputStream
 
     // The current raw code bits being buffered, which is always in the range [low, high].
     private var code: Long = 0
@@ -30,7 +32,8 @@ public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : Arithmeti
      * @throws IOException if an I/O exception occurred
      */
     init {
-        repeat (numStateBits) { code = code shl 1 or readCodeBit().toLong() }
+        input = Objects.requireNonNull(`in`)!!
+        for (i in 0..<numStateBits) code = code shl 1 or readCodeBit().toLong()
     }
 
 
@@ -43,6 +46,7 @@ public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : Arithmeti
      * @throws NullPointerException if the frequency table is `null`
      * @throws IOException if an I/O exception occurred
      */
+    @Throws(IOException::class)
     public fun read(freqs: FrequencyTable): Int {
         return read(CheckedFrequencyTable(freqs))
     }
@@ -57,52 +61,51 @@ public class ArithmeticDecoder(numBits: Int, buffer: BitInputBuffer) : Arithmeti
      * @throws IllegalArgumentException if the frequency table's total is too large
      * @throws IOException if an I/O exception occurred
      */
+    @Throws(IOException::class)
     public fun read(freqs: CheckedFrequencyTable): Int {
         // Translate from coding range scale to frequency table scale
-        val total = freqs.getTotal().toLong()
-        require(total <= maximumTotal) { "Cannot decode symbol because total is too large" }
-        val range = high - low + 1
-        val offset = code - low
+        val total: Long = freqs.getTotal().toLong() // Fix
+        require(!(total > maximumTotal)) { "Cannot decode symbol because total is too large" }
+        val range: Long = high - low + 1
+        val offset: Long = code - low
         val value = ((offset + 1) * total - 1) / range
-        check(!(value * range / total > offset))
-        check(0 <= value && value < total)
-        //if (value * range / total > offset) throw java.lang.AssertionError()
-        //if (!(0 <= value && value < total)) throw java.lang.AssertionError()
+        if (value * range / total > offset) throw AssertionError()
+        if (!(0 <= value && value < total)) throw AssertionError()
 
 
         // A kind of binary search. Find highest symbol such that freqs.getLow(symbol) <= value.
         var start = 0
-        var end = freqs.getSymbolLimit()
+        var end: Int = freqs.getSymbolLimit()
         while (end - start > 1) {
             val middle = (start + end) ushr 1
             if (freqs.getLow(middle) > value) end = middle
             else start = middle
         }
-        check(!(start + 1 != end))
-        //if (start + 1 != end) throw java.lang.AssertionError()
+        if (start + 1 != end) throw AssertionError()
 
         val symbol = start
-        check(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)
-        //if (!(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)) throw java.lang.AssertionError()
+        if (!(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)) throw AssertionError()
         update(freqs, symbol)
-        check(low <= code && code <= high) { "Code out of range" }
-        //if (!(low <= code && code <= high)) throw java.lang.AssertionError("Code out of range")
+        if (!(low <= code && code <= high)) throw AssertionError("Code out of range")
         return symbol
     }
 
 
+    @Throws(IOException::class)
     override fun shift() {
-        code = ((code shl 1) and stateMask) or readCodeBit().toLong()
+        code = ((code shl 1) and stateMask) or readCodeBit().toLong() // Fix
     }
 
 
+    @Throws(IOException::class)
     override fun underflow() {
-        code = (code and halfRange) or ((code shl 1) and (stateMask ushr 1)) or readCodeBit().toLong()
+        code = (code and halfRange) or ((code shl 1) and (stateMask ushr 1)) or readCodeBit().toLong() // Fix
     }
 
 
     // Returns the next bit (0 or 1) from the input stream. The end
     // of stream is treated as an infinite number of trailing zeros.
+    @Throws(IOException::class)
     private fun readCodeBit(): Int {
         var temp: Int = input.read()
         if (temp == -1) temp = 0

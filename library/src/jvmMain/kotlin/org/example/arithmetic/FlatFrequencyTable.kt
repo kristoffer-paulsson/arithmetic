@@ -1,18 +1,17 @@
-package org.example.arithmetic.ref
-
-
 /*
- * Reference arithmetic coding
- *
- * Copyright (c) Project Nayuki
- * MIT License. See readme file.
- * https://www.nayuki.io/page/reference-arithmetic-coding
- */
+* Reference arithmetic coding
+*
+* Copyright (c) Project Nayuki
+* MIT License. See readme file.
+* https://www.nayuki.io/page/reference-arithmetic-coding
+*/
+package org.example.arithmetic
+
 /**
  * An immutable frequency table where every symbol has the same frequency of 1.
  * Useful as a fallback model when no statistics are available.
  */
-public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
+public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTable {
     /*---- Fields ----*/ // Total number of symbols, which is at least 1.
     private val numSymbols: Int
 
@@ -33,7 +32,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * Returns the number of symbols in this table, which is at least 1.
      * @return the number of symbols in this table
      */
-    override fun getSymbolLimit(): Int {
+    public override fun getSymbolLimit(): Int {
         return numSymbols
     }
 
@@ -44,7 +43,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * @return the frequency of the symbol, which is 1
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun get(symbol: Int): Int {
+    public override fun get(symbol: Int): Int {
         checkSymbol(symbol)
         return 1
     }
@@ -55,7 +54,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * always equal to the number of symbols in this table.
      * @return the total of all symbol frequencies, which is `getSymbolLimit()`
      */
-    override fun getTotal(): Int {
+    public override fun getTotal(): Int {
         return numSymbols
     }
 
@@ -67,7 +66,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * @return the sum of the frequencies of all the symbols below `symbol`, which is `symbol`
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun getLow(symbol: Int): Int {
+    public override fun getLow(symbol: Int): Int {
         checkSymbol(symbol)
         return symbol
     }
@@ -80,7 +79,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * @return the sum of the frequencies of `symbol` and all symbols below, which is `symbol + 1`
      * @throws IllegalArgumentException if `symbol` &lt; 0 or `symbol`  `getSymbolLimit()`
      */
-    override fun getHigh(symbol: Int): Int {
+    public override fun getHigh(symbol: Int): Int {
         checkSymbol(symbol)
         return symbol + 1
     }
@@ -96,8 +95,8 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * Returns a string representation of this frequency table. The format is subject to change.
      * @return a string representation of this frequency table
      */
-    override fun toString(): String {
-        return "FlatFrequencyTable=$numSymbols"
+    public override fun toString(): String {
+        return "FlatFrequencyTable=" + numSymbols
     }
 
 
@@ -107,7 +106,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * @param freq ignored
      * @throws UnsupportedOperationException because this frequency table is immutable
      */
-    override fun set(symbol: Int, freq: Int) {
+    public override fun set(symbol: Int, freq: Int) {
         throw UnsupportedOperationException()
     }
 
@@ -117,7 +116,7 @@ public class FlatFrequencyTable(numSyms: Int) : FrequencyTable {
      * @param symbol ignored
      * @throws UnsupportedOperationException because this frequency table is immutable
      */
-    override fun increment(symbol: Int) {
+    public override fun increment(symbol: Int) {
         throw UnsupportedOperationException()
     }
 }

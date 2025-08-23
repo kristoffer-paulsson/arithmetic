@@ -1,11 +1,12 @@
 /*
- * Reference arithmetic coding
- *
- * Copyright (c) Project Nayuki
- * MIT License. See readme file.
- * https://www.nayuki.io/page/reference-arithmetic-coding
- */
-package org.example.arithmetic.ref
+* Reference arithmetic coding
+*
+* Copyright (c) Project Nayuki
+* MIT License. See readme file.
+* https://www.nayuki.io/page/reference-arithmetic-coding
+*/
+package org.example.arithmetic
+
 
 /**
  * A table of symbol frequencies. The table holds data for symbols numbered from 0
@@ -16,7 +17,6 @@ package org.example.arithmetic.ref
  * The total of all symbol frequencies must not exceed Integer.MAX_VALUE.
  */
 public interface FrequencyTable {
-
     /**
      * Returns the number of symbols in this frequency table, which is a positive number.
      * @return the number of symbols in this frequency table
