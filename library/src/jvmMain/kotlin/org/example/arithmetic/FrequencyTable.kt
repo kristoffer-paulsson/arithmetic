@@ -20,7 +20,6 @@
  */
 package org.example.arithmetic
 
-
 /**
  * A table of symbol frequencies. The table holds data for symbols numbered from 0
  * to getSymbolLimit()1. Each symbol has a frequency, which is a non-negative integer.
@@ -36,7 +35,6 @@ public interface FrequencyTable {
      */
     public fun getSymbolLimit(): Int
 
-
     /**
      * Returns the frequency of the specified symbol. The returned value is at least 0.
      * @param symbol the symbol to query
@@ -44,7 +42,6 @@ public interface FrequencyTable {
      * @throws IllegalArgumentException if the symbol is out of range
      */
     public fun get(symbol: Int): Int
-
 
     /**
      * Sets the frequency of the specified symbol to the specified value.
@@ -56,7 +53,6 @@ public interface FrequencyTable {
      */
     public fun set(symbol: Int, freq: Int)
 
-
     /**
      * Increments the frequency of the specified symbol.
      * @param symbol the symbol whose frequency to increment
@@ -65,14 +61,12 @@ public interface FrequencyTable {
      */
     public fun increment(symbol: Int)
 
-
     /**
      * Returns the total of all symbol frequencies. The returned value is at
      * least 0 and is always equal to `getHigh(getSymbolLimit() - 1)`.
      * @return the total of all symbol frequencies
      */
     public fun getTotal(): Int
-
 
     /**
      * Returns the sum of the frequencies of all the symbols strictly
@@ -82,7 +76,6 @@ public interface FrequencyTable {
      * @throws IllegalArgumentException if the symbol is out of range
      */
     public fun getLow(symbol: Int): Int
-
 
     /**
      * Returns the sum of the frequencies of the specified symbol
