@@ -57,10 +57,10 @@ public object ArithmeticCompress {
         val freqs: FrequencyTable = getFrequencies(inputFile)
         freqs.increment(256) // EOF symbol gets a frequency of 1
 
-        BufferedInputStream(FileInputStream(inputFile)).use { `in` ->
+        BufferedInputStream(FileInputStream(inputFile)).use { inp ->
             BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { out ->
                 writeFrequencies(out, freqs)
-                compress(freqs, `in`, out)
+                compress(freqs, inp, out)
             }
         }
     }
@@ -68,8 +68,7 @@ public object ArithmeticCompress {
 
     // Returns a frequency table based on the bytes in the given file.
     // Also contains an extra entry for symbol 256, whose frequency is set to 0.
-    @Throws(IOException::class)
-    private fun getFrequencies(file: File?): FrequencyTable {
+    private fun getFrequencies(file: File): FrequencyTable {
         val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
         BufferedInputStream(FileInputStream(file)).use { input ->
             while (true) {
@@ -83,7 +82,6 @@ public object ArithmeticCompress {
 
 
     // To allow unit testing, this method is package-private instead of private.
-    @Throws(IOException::class)
     public fun writeFrequencies(out: BitOutputStream, freqs: FrequencyTable) {
         for (i in 0..255) writeInt(out, 32, freqs.get(i))
     }
@@ -104,7 +102,6 @@ public object ArithmeticCompress {
 
 
     // Writes an unsigned integer of the given bit width to the given stream.
-    @Throws(IOException::class)
     private fun writeInt(out: BitOutputStream, numBits: Int, value: Int) {
         require(!(numBits < 0 || numBits > 32))
 
