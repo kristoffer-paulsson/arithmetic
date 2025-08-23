@@ -27,39 +27,32 @@ import java.util.Objects
  * Reads from an arithmetic-coded bit stream and decodes symbols. Not thread-safe.
  * @see ArithmeticEncoder
  */
-public class ArithmeticDecoder public constructor(numBits: Int, `in`: BitInputStream) : ArithmeticCoderBase(numBits) {
-    /*---- Fields ----*/ // The underlying bit input stream (not null).
+public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInputStream) : ArithmeticCoderBase(numBits) {
     private val input: BitInputStream
 
     // The current raw code bits being buffered, which is always in the range [low, high].
     private var code: Long = 0
 
-
-    /*---- Constructor ----*/ /**
+    /**
      * Constructs an arithmetic coding decoder based on the
      * specified bit input stream, and fills the code bits.
      * @param numBits the number of bits for the arithmetic coding range
-     * @param in the bit input stream to read from
+     * @param inp the bit input stream to read from
      * @throws NullPointerException if the input steam is `null`
      * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
-     * @throws IOException if an I/O exception occurred
      */
     init {
-        input = Objects.requireNonNull(`in`)!!
+        input = inp
         for (i in 0..<numStateBits) code = code shl 1 or readCodeBit().toLong()
     }
 
-
-    /*---- Methods ----*/
     /**
      * Decodes the next symbol based on the specified frequency table and returns it.
      * Also updates this arithmetic coder's state and may read in some bits.
      * @param freqs the frequency table to use
      * @return the next symbol
      * @throws NullPointerException if the frequency table is `null`
-     * @throws IOException if an I/O exception occurred
      */
-    @Throws(IOException::class)
     public fun read(freqs: FrequencyTable): Int {
         return read(CheckedFrequencyTable(freqs))
     }
@@ -72,9 +65,7 @@ public class ArithmeticDecoder public constructor(numBits: Int, `in`: BitInputSt
      * @return the next symbol
      * @throws NullPointerException if the frequency table is `null`
      * @throws IllegalArgumentException if the frequency table's total is too large
-     * @throws IOException if an I/O exception occurred
      */
-    @Throws(IOException::class)
     public fun read(freqs: CheckedFrequencyTable): Int {
         // Translate from coding range scale to frequency table scale
         val total: Long = freqs.getTotal().toLong() // Fix
@@ -103,22 +94,16 @@ public class ArithmeticDecoder public constructor(numBits: Int, `in`: BitInputSt
         return symbol
     }
 
-
-    @Throws(IOException::class)
     override fun shift() {
         code = ((code shl 1) and stateMask) or readCodeBit().toLong() // Fix
     }
 
-
-    @Throws(IOException::class)
     override fun underflow() {
         code = (code and halfRange) or ((code shl 1) and (stateMask ushr 1)) or readCodeBit().toLong() // Fix
     }
 
-
     // Returns the next bit (0 or 1) from the input stream. The end
     // of stream is treated as an infinite number of trailing zeros.
-    @Throws(IOException::class)
     private fun readCodeBit(): Int {
         var temp: Int = input.read()
         if (temp == -1) temp = 0
