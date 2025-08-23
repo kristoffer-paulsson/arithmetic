@@ -28,22 +28,17 @@ import java.util.Objects
  * implementation. However, arithmetic overflow conditions are not checked.
  */
 public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : FrequencyTable {
-    /*---- Fields ----*/ // The underlying frequency table that holds the data (not null).
     private val freqTable: FrequencyTable
 
-
-    /*---- Constructor ----*/
     init {
         freqTable = Objects.requireNonNull(freq)!!
     }
 
-    /*---- Methods ----*/
     public override fun getSymbolLimit(): Int {
         val result: Int = freqTable.getSymbolLimit()
         if (result <= 0) throw AssertionError("Non-positive symbol limit")
         return result
     }
-
 
     public override fun get(symbol: Int): Int {
         val result: Int = freqTable.get(symbol)
@@ -52,13 +47,11 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
         return result
     }
 
-
     public override fun getTotal(): Int {
         val result: Int = freqTable.getTotal()
         if (result < 0) throw AssertionError("Negative total frequency")
         return result
     }
-
 
     public override fun getLow(symbol: Int): Int {
         if (isSymbolInRange(symbol)) {
@@ -85,23 +78,19 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
         }
     }
 
-
     public override fun toString(): String {
         return "CheckedFrequencyTable (" + freqTable.toString() + ")"
     }
-
 
     public override fun set(symbol: Int, freq: Int) {
         freqTable.set(symbol, freq)
         if (!isSymbolInRange(symbol) || freq < 0) throw AssertionError("IllegalArgumentException expected")
     }
 
-
     public override fun increment(symbol: Int) {
         freqTable.increment(symbol)
         if (!isSymbolInRange(symbol)) throw AssertionError("IllegalArgumentException expected")
     }
-
 
     private fun isSymbolInRange(symbol: Int): Boolean {
         return 0 <= symbol && symbol < this.getSymbolLimit()

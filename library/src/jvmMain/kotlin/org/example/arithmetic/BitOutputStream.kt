@@ -20,9 +20,7 @@
  */
 package org.example.arithmetic
 
-import java.io.IOException
 import java.io.OutputStream
-import java.util.Objects
 
 /**
  * A stream where bits can be written to. Because they are written to an underlying
