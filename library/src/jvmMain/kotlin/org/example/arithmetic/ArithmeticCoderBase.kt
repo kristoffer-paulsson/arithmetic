@@ -20,8 +20,7 @@
  */
 package org.example.arithmetic
 
-import java.io.IOException
-
+import kotlin.math.min
 /**
  * Provides the state and behaviors that arithmetic coding encoders and decoders share.
  * @see ArithmeticEncoder
@@ -88,7 +87,7 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
         halfRange = fullRange ushr 1 // Non-zero
         quarterRange = halfRange ushr 1 // Can be zero
         minimumRange = quarterRange + 2 // At least 2
-        maximumTotal = Math.min(Long.MAX_VALUE / fullRange, minimumRange)
+        maximumTotal = min(Long.MAX_VALUE / fullRange, minimumRange)
         stateMask = fullRange - 1
 
         low = 0

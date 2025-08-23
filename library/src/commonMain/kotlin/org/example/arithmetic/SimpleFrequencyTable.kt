@@ -46,7 +46,7 @@ public class SimpleFrequencyTable : FrequencyTable {
      */
     public constructor(freqs: IntArray) {
         require(freqs.size >= 1) { "At least 1 symbol needed" }
-        require(!(freqs.size > Integer.MAX_VALUE - 1)) { "Too many symbols" }
+        require(!(freqs.size > Int.MAX_VALUE - 1)) { "Too many symbols" }
 
         frequencies = freqs.clone() // Make copy
         total = 0
@@ -125,7 +125,7 @@ public class SimpleFrequencyTable : FrequencyTable {
      */
     public override fun increment(symbol: Int) {
         checkSymbol(symbol)
-        if (frequencies[symbol] == Integer.MAX_VALUE) throw ArithmeticException("Arithmetic overflow")
+        if (frequencies[symbol] == Int.MAX_VALUE) throw ArithmeticException("Arithmetic overflow")
         total = Math.addExact(total, 1)
         frequencies[symbol]++
         cumulative = null
@@ -191,7 +191,7 @@ public class SimpleFrequencyTable : FrequencyTable {
      */
     public override fun toString(): String {
         val sb = StringBuilder()
-        for (i in frequencies.indices) sb.append(String.format("%d\t%d%n", i, frequencies[i]))
+        //for (i in frequencies.indices) sb.append(String.format("%d\t%d%n", i, frequencies[i]))
         return sb.toString()
     }
 }
