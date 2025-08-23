@@ -30,10 +30,6 @@ public class BitOutputBuffer(size: Int) {
     // Number of accumulated bits in the current byte, always between 0 and 7 (inclusive).
     private var numBitsFilled = 0
 
-    private var closed = false
-
-
-
     /*---- Methods ----*/
     /**
      * Writes a bit to the stream. The specified bit must be 0 or 1.
@@ -57,7 +53,7 @@ public class BitOutputBuffer(size: Int) {
      */
     public fun write(bit: Int) {
         require(bit == 0 || bit == 1) { "Argument must be 0 or 1" }
-        if (closed || byteIndex >= buffer.size) return
+        if (byteIndex >= buffer.size) return
         currentByte = (currentByte shl 1) or bit
         numBitsFilled++
         if (numBitsFilled == 8) {
@@ -85,11 +81,7 @@ public class BitOutputBuffer(size: Int) {
      * After closing, no more bits can be written.
      */
     public fun close() {
-        if (closed) return
-        if (numBitsFilled > 0 && byteIndex < buffer.size) {
-            buffer[byteIndex++] = (currentByte shl (8 - numBitsFilled)).toByte()
-        }
-        closed = true
+        while (numBitsFilled != 0) write(0)
     }
 
     /**

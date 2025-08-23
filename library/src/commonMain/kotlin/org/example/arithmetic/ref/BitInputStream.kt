@@ -30,8 +30,6 @@ public class BitInputBuffer( private val bytes: ByteArray) {
     // Number of remaining bits in the current byte, always between 0 and 7 (inclusive).
     private var numBitsRemaining = 0
 
-    private var closed = false
-
     /*---- Methods ----*/
     /**
      * Reads a bit from this stream. Returns 0 or 1 if a bit is available, or -1 if
@@ -56,7 +54,7 @@ public class BitInputBuffer( private val bytes: ByteArray) {
      * the end of buffer is reached. The end always occurs on a byte boundary.
      */
     public fun read(): Int {
-        if (closed || byteIndex >= bytes.size) return -1
+        if (byteIndex >= bytes.size) return -1
         if (currentByte == -1) return -1 // Fix
         if (numBitsRemaining == 0) {
             currentByte = bytes[byteIndex++].toInt() and 0xFF
@@ -109,7 +107,6 @@ public class BitInputBuffer( private val bytes: ByteArray) {
      * Closes the buffer and resets state.
      */
     public fun close() {
-        closed = true
         byteIndex = bytes.size
         currentByte = -1 // 0
         numBitsRemaining = 0
