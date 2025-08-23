@@ -1,10 +1,20 @@
-/*
-* Reference arithmetic coding
-*
-* Copyright (c) Project Nayuki
-* MIT License. See readme file.
-* https://www.nayuki.io/page/reference-arithmetic-coding
-*/
+/**
+ * Reference arithmetic coding
+ *
+ * Copyright (c) 2025 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+ *
+ * Copyright (c) Project Nayuki
+ * MIT License. See readme file.
+ * https://www.nayuki.io/page/reference-arithmetic-coding
+ *
+ *      https://opensource.org/licenses/MIT
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * Contributors:
+ *      Nayuki - initial Java implementation
+ *      Kristoffer Paulsson - porting and adaption to Kotlin for alternative use
+ */
 package org.example.arithmetic
 
 import java.io.EOFException
