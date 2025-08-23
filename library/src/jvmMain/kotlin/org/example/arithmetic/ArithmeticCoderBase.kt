@@ -29,7 +29,6 @@ import java.io.IOException
  * @see ArithmeticDecoder
  */
 public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
-    /*---- Configuration fields ----*/
     /**
      * Number of bits for the 'low' and 'high' state variables. Must be in the range [1, 62].
      *
@@ -66,8 +65,6 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
     /** Bit mask of numStateBits ones, which is 0111...111.  */
     protected val stateMask: Long
 
-
-    /*---- State fields ----*/
     /**
      * Low end of this arithmetic coder's current range. Conceptually has an infinite number of trailing 0s.
      */
@@ -79,7 +76,7 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
     protected var high: Long
 
 
-    /*---- Constructor ----*/ /**
+    /**
      * Constructs an arithmetic coder, which initializes the code range.
      * @param numBits the number of bits for the arithmetic coding range
      * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
@@ -98,8 +95,6 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
         high = stateMask
     }
 
-
-    /*---- Methods ----*/
     /**
      * Updates the code range (low and high) of this arithmetic coder as a result
      * of processing the specified symbol with the specified frequency table.
@@ -121,7 +116,6 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
      * @param symbol the symbol that was processed
      * @throws IllegalArgumentException if the symbol has zero frequency or the frequency table's total is too large
      */
-    @Throws(IOException::class)
     protected fun update(freqs: CheckedFrequencyTable, symbol: Int) {
         // State check
         if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw AssertionError("Low or high out of range")
@@ -164,16 +158,12 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
 
     /**
      * Called to handle the situation when the top bit of `low` and `high` are equal.
-     * @throws IOException if an I/O exception occurred
      */
-    @Throws(IOException::class)
     protected abstract fun shift()
 
 
     /**
      * Called to handle the situation when low=01(...) and high=10(...).
-     * @throws IOException if an I/O exception occurred
      */
-    @Throws(IOException::class)
     protected abstract fun underflow()
 }
