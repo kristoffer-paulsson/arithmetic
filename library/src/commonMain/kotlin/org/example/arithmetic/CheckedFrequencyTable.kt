@@ -20,8 +20,6 @@
  */
 package org.example.arithmetic
 
-import java.util.Objects
-
 /**
  * A wrapper that checks the preconditions (arguments) and postconditions (return value)
  * of all the frequency table methods. Useful for finding faults in a frequency table
@@ -31,7 +29,7 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
     private val freqTable: FrequencyTable
 
     init {
-        freqTable = Objects.requireNonNull(freq)!!
+        freqTable = freq
     }
 
     public override fun getSymbolLimit(): Int {
