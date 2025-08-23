@@ -47,8 +47,8 @@ public object AdaptiveArithmeticCompress {
             System.exit(1)
             return
         }
-        val inputFile: File = File(args[0])
-        val outputFile: File = File(args[1])
+        val inputFile = File(args[0])
+        val outputFile = File(args[1])
 
         BufferedInputStream(FileInputStream(inputFile)).use { src ->
             BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { dst ->
@@ -60,9 +60,9 @@ public object AdaptiveArithmeticCompress {
 
     // To allow unit testing, this method is package-private instead of private.
     public fun compress(src: InputStream, dst: BitOutputStream) {
-        val initFreqs: FlatFrequencyTable = FlatFrequencyTable(257)
+        val initFreqs = FlatFrequencyTable(257)
         val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
-        val enc: ArithmeticEncoder = ArithmeticEncoder(32, dst)
+        val enc = ArithmeticEncoder(32, dst)
         while (true) {
             // Read and encode one byte
             val symbol: Int = src.read()
