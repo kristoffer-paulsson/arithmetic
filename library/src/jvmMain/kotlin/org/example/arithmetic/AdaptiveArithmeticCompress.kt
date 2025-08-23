@@ -57,8 +57,6 @@ public object AdaptiveArithmeticCompress {
         }
     }
 
-
-    // To allow unit testing, this method is package-private instead of private.
     public fun compress(src: InputStream, dst: BitOutputStream) {
         val initFreqs = FlatFrequencyTable(257)
         val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
