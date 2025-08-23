@@ -21,11 +21,12 @@
 package org.example.arithmetic
 
 import kotlin.math.min
+
 /**
  * Provides the state and behaviors that arithmetic coding encoders and decoders share.
- * @see ArithmeticEncoder
+ * @see org.example.arithmetic.ArithmeticEncoder
  *
- * @see ArithmeticDecoder
+ * @see org.example.arithmetic.ArithmeticDecoder
  */
 public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
     /**
