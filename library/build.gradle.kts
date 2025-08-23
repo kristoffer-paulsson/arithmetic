@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import java.net.URL
 
 object This {
-    const val longName = "Arithmetic"
+    const val longName = "Kotlin arithmetic coding"
     const val longDescription = ""
     const val url = ""
 }
