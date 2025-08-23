@@ -15,7 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "aritthmetic"
+rootProject.name = "arithmetic"
 
 include(":library")
 include(":examples")

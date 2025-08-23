@@ -46,23 +46,23 @@ public object AdaptiveArithmeticDecompress {
         val inputFile = File(args[0])
         val outputFile = File(args[1])
 
-        BitInputStream(BufferedInputStream(FileInputStream(inputFile))).use { src ->
-            BufferedOutputStream(FileOutputStream(outputFile)).use { dst ->
-                decompress(src, dst)
+        BitInputStream(BufferedInputStream(FileInputStream(inputFile))).use { inp ->
+            BufferedOutputStream(FileOutputStream(outputFile)).use { out ->
+                decompress(inp, out)
             }
         }
     }
 
-    public fun decompress(src: BitInputStream, dst: OutputStream) {
+    public fun decompress(inp: BitInputStream, out: OutputStream) {
         val initFreqs = FlatFrequencyTable(257)
         val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
-        val dec = ArithmeticDecoder(32, src)
+        val dec = ArithmeticDecoder(32, inp)
         while (true) {
             // Decode and write one byte
             val symbol: Int = dec.read(freqs)
             if (symbol == 256)  // EOF symbol
                 break
-            dst.write(symbol)
+            out.write(symbol)
             freqs.increment(symbol)
         }
     }
