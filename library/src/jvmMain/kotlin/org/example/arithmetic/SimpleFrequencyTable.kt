@@ -20,7 +20,6 @@
  */
 package org.example.arithmetic
 
-
 import java.util.Objects
 
 /**
@@ -29,7 +28,6 @@ import java.util.Objects
  * takes linear time, but there exist faster algorithms such as Fenwick trees.
  */
 public class SimpleFrequencyTable : FrequencyTable {
-    /*---- Fields ----*/ // The frequency for each symbol. Its length is at least 1, and each element is non-negative.
     private val frequencies: IntArray
 
     // cumulative[i] is the sum of 'frequencies' from 0 (inclusive) to i (exclusive).
@@ -39,8 +37,6 @@ public class SimpleFrequencyTable : FrequencyTable {
     // Always equal to the sum of 'frequencies'.
     private var total: Int
 
-
-    /*---- Constructors ----*/
     /**
      * Constructs a frequency table from the specified array of symbol frequencies. There must be at least
      * 1 symbol, no symbol has a negative frequency, and the total must not exceed `Integer.MAX_VALUE`.
@@ -51,7 +47,6 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @throws ArithmeticException if the total of `freqs` exceeds `Integer.MAX_VALUE`
      */
     public constructor(freqs: IntArray) {
-        Objects.requireNonNull(freqs)
         require(freqs.size >= 1) { "At least 1 symbol needed" }
         require(!(freqs.size > Integer.MAX_VALUE - 1)) { "Too many symbols" }
 
@@ -64,7 +59,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         cumulative = null
     }
 
-
     /**
      * Constructs a frequency table by copying the specified frequency table.
      * @param freqs the frequency table to copy
@@ -74,7 +68,6 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @throws ArithmeticException if the total of all `freqs` elements exceeds `Integer.MAX_VALUE`
      */
     public constructor(freqs: FrequencyTable) {
-        Objects.requireNonNull(freqs)
         val numSym: Int = freqs.getSymbolLimit()
         require(numSym >= 1) { "At least 1 symbol needed" }
 
@@ -89,8 +82,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         cumulative = null
     }
 
-
-    /*---- Methods ----*/
     /**
      * Returns the number of symbols in this frequency table, which is at least 1.
      * @return the number of symbols in this frequency table
@@ -98,7 +89,6 @@ public class SimpleFrequencyTable : FrequencyTable {
     public override fun getSymbolLimit(): Int {
         return frequencies.size
     }
-
 
     /**
      * Returns the frequency of the specified symbol. The returned value is at least 0.
@@ -110,7 +100,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         checkSymbol(symbol)
         return frequencies[symbol]
     }
-
 
     /**
      * Sets the frequency of the specified symbol to the specified value. The frequency value
@@ -131,7 +120,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         cumulative = null
     }
 
-
     /**
      * Increments the frequency of the specified symbol.
      * @param symbol the symbol whose frequency to increment
@@ -145,7 +133,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         cumulative = null
     }
 
-
     /**
      * Returns the total of all symbol frequencies. The returned value is at
      * least 0 and is always equal to `getHigh(getSymbolLimit() - 1)`.
@@ -154,7 +141,6 @@ public class SimpleFrequencyTable : FrequencyTable {
     public override fun getTotal(): Int {
         return total
     }
-
 
     /**
      * Returns the sum of the frequencies of all the symbols strictly
@@ -169,7 +155,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         return cumulative!![symbol]
     }
 
-
     /**
      * Returns the sum of the frequencies of the specified symbol
      * and all the symbols below. The returned value is at least 0.
@@ -182,7 +167,6 @@ public class SimpleFrequencyTable : FrequencyTable {
         if (cumulative == null) initCumulative()
         return cumulative!![symbol + 1]
     }
-
 
     // Recomputes the array of cumulative symbol frequencies.
     private fun initCumulative() {
@@ -197,12 +181,10 @@ public class SimpleFrequencyTable : FrequencyTable {
         if (sum != total) throw AssertionError()
     }
 
-
     // Returns silently if 0 <= symbol < frequencies.length, otherwise throws an exception.
     private fun checkSymbol(symbol: Int) {
         require(0 <= symbol && symbol < frequencies.size) { "Symbol out of range" }
     }
-
 
     /**
      * Returns a string representation of this frequency table,
