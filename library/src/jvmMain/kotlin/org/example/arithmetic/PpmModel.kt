@@ -21,7 +21,6 @@
 package org.example.arithmetic
 
 public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
-    /*---- Fields ----*/
     public val modelOrder: Int
 
     private val symbolLimit: Int
@@ -30,8 +29,6 @@ public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
     public var rootContext: Context = nullCtx
     public val orderMinus1Freqs: FrequencyTable
 
-
-    /*---- Constructors ----*/
     init {
         require(order >= -1 && 0 <= escapeSymbol && escapeSymbol < symbolLimit)
         this.modelOrder = order
@@ -45,8 +42,6 @@ public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
         orderMinus1Freqs = FlatFrequencyTable(symbolLimit)
     }
 
-
-    /*---- Methods ----*/
     public fun incrementContexts(history: IntArray, symbol: Int) {
         if (modelOrder == -1) return
         require(history.size <= modelOrder && 0 <= symbol && symbol < symbolLimit)
@@ -68,13 +63,9 @@ public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
         }
     }
 
-
-    /*---- Helper structure ----*/
     public class Context public constructor(symbols: Int, hasSubctx: Boolean) {
         public val frequencies: FrequencyTable
-
         public var subcontexts: Array<Context> = emptyArray()
-
 
         init {
             frequencies = SimpleFrequencyTable(IntArray(symbols))
