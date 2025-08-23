@@ -25,7 +25,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.InputStream
 
 /**
@@ -41,7 +40,6 @@ import java.io.InputStream
  * decompressor have synchronized states, so that the data can be decompressed properly.
  */
 public object AdaptiveArithmeticCompress {
-    @Throws(IOException::class)
     public fun main(args: Array<String>) {
         // Handle command line arguments
         if (args.size != 2) {
@@ -52,23 +50,22 @@ public object AdaptiveArithmeticCompress {
         val inputFile: File = File(args[0])
         val outputFile: File = File(args[1])
 
-        BufferedInputStream(FileInputStream(inputFile)).use { `in` ->
-            BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { out ->
-                compress(`in`, out)
+        BufferedInputStream(FileInputStream(inputFile)).use { src ->
+            BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { dst ->
+                compress(src, dst)
             }
         }
     }
 
 
     // To allow unit testing, this method is package-private instead of private.
-    @Throws(IOException::class)
-    public fun compress(`in`: InputStream, out: BitOutputStream) {
+    public fun compress(src: InputStream, dst: BitOutputStream) {
         val initFreqs: FlatFrequencyTable = FlatFrequencyTable(257)
         val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
-        val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
+        val enc: ArithmeticEncoder = ArithmeticEncoder(32, dst)
         while (true) {
             // Read and encode one byte
-            val symbol: Int = `in`.read()
+            val symbol: Int = src.read()
             if (symbol == -1) break
             enc.write(freqs, symbol)
             freqs.increment(symbol)
