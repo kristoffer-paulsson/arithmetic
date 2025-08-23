@@ -25,11 +25,9 @@ package org.example.arithmetic
  * Useful as a fallback model when no statistics are available.
  */
 public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTable {
-    /*---- Fields ----*/ // Total number of symbols, which is at least 1.
     private val numSymbols: Int
 
-
-    /*---- Constructor ----*/ /**
+    /**
      * Constructs a flat frequency table with the specified number of symbols.
      * @param numSyms the number of symbols, which must be at least 1
      * @throws IllegalArgumentException if the number of symbols is less than 1
@@ -39,8 +37,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
         numSymbols = numSyms
     }
 
-
-    /*---- Methods ----*/
     /**
      * Returns the number of symbols in this table, which is at least 1.
      * @return the number of symbols in this table
@@ -48,7 +44,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
     public override fun getSymbolLimit(): Int {
         return numSymbols
     }
-
 
     /**
      * Returns the frequency of the specified symbol, which is always 1.
@@ -61,7 +56,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
         return 1
     }
 
-
     /**
      * Returns the total of all symbol frequencies, which is
      * always equal to the number of symbols in this table.
@@ -70,7 +64,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
     public override fun getTotal(): Int {
         return numSymbols
     }
-
 
     /**
      * Returns the sum of the frequencies of all the symbols strictly below
@@ -84,7 +77,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
         return symbol
     }
 
-
     /**
      * Returns the sum of the frequencies of the specified symbol and all
      * the symbols below. The returned value is equal to `symbol + 1`.
@@ -97,12 +89,10 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
         return symbol + 1
     }
 
-
     // Returns silently if 0 <= symbol < numSymbols, otherwise throws an exception.
     private fun checkSymbol(symbol: Int) {
         require(0 <= symbol && symbol < numSymbols) { "Symbol out of range" }
     }
-
 
     /**
      * Returns a string representation of this frequency table. The format is subject to change.
@@ -111,7 +101,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
     public override fun toString(): String {
         return "FlatFrequencyTable=" + numSymbols
     }
-
 
     /**
      * Unsupported operation, because this frequency table is immutable.
@@ -122,7 +111,6 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
     public override fun set(symbol: Int, freq: Int) {
         throw UnsupportedOperationException()
     }
-
 
     /**
      * Unsupported operation, because this frequency table is immutable.
