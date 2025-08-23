@@ -20,8 +20,6 @@
  */
 package org.example.arithmetic
 
-import java.util.Objects
-
 /**
  * A mutable table of symbol frequencies. The number of symbols cannot be changed
  * after construction. The current algorithm for calculating cumulative frequencies
