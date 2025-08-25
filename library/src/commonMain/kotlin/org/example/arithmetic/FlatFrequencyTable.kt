@@ -91,7 +91,7 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
 
     // Returns silently if 0 <= symbol < numSymbols, otherwise throws an exception.
     private fun checkSymbol(symbol: Int) {
-        require(0 <= symbol && symbol < numSymbols) { "Symbol out of range" }
+        require(symbol in 0..<numSymbols) { "Symbol out of range" }
     }
 
     /**
@@ -99,7 +99,7 @@ public class FlatFrequencyTable public constructor(numSyms: Int) : FrequencyTabl
      * @return a string representation of this frequency table
      */
     public override fun toString(): String {
-        return "FlatFrequencyTable=" + numSymbols
+        return "FlatFrequencyTable=$numSymbols"
     }
 
     /**
