@@ -26,11 +26,7 @@ package org.example.arithmetic
  * implementation. However, arithmetic overflow conditions are not checked.
  */
 public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : FrequencyTable {
-    private val freqTable: FrequencyTable
-
-    init {
-        freqTable = freq
-    }
+    private val freqTable: FrequencyTable = freq
 
     public override fun getSymbolLimit(): Int {
         val result: Int = freqTable.getSymbolLimit()
@@ -55,7 +51,7 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
         if (isSymbolInRange(symbol)) {
             val low: Int = freqTable.getLow(symbol)
             val high: Int = freqTable.getHigh(symbol)
-            if (!(0 <= low && low <= high && high <= freqTable.getTotal())) throw AssertionError("Symbol low cumulative frequency out of range")
+            if (!(low in 0..high && high <= freqTable.getTotal())) throw AssertionError("Symbol low cumulative frequency out of range")
             return low
         } else {
             freqTable.getLow(symbol)
@@ -68,7 +64,7 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
         if (isSymbolInRange(symbol)) {
             val low: Int = freqTable.getLow(symbol)
             val high: Int = freqTable.getHigh(symbol)
-            if (!(0 <= low && low <= high && high <= freqTable.getTotal())) throw AssertionError("Symbol high cumulative frequency out of range")
+            if (!(low in 0..high && high <= freqTable.getTotal())) throw AssertionError("Symbol high cumulative frequency out of range")
             return high
         } else {
             freqTable.getHigh(symbol)
@@ -77,7 +73,7 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
     }
 
     public override fun toString(): String {
-        return "CheckedFrequencyTable (" + freqTable.toString() + ")"
+        return "CheckedFrequencyTable ($freqTable)"
     }
 
     public override fun set(symbol: Int, freq: Int) {
