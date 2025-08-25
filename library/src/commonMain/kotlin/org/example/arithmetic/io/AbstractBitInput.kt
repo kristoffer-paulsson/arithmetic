@@ -41,7 +41,8 @@ public abstract class AbstractBitInput<E>(inp: E): BitInput {
             if (currentByte == -1) return -1
             numBitsRemaining = 8
         }
-        if (numBitsRemaining <= 0) throw AssertionError()
+        // if (numBitsRemaining <= 0) throw AssertionError()
+        check(numBitsRemaining > 0)
         numBitsRemaining--
         return (currentByte ushr numBitsRemaining) and 1
     }
