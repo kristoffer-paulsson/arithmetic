@@ -20,6 +20,7 @@
  */
 package org.example.arithmetic
 
+import org.example.arithmetic.io.BitOutput
 import java.io.OutputStream
 
 /**
@@ -28,7 +29,7 @@ import java.io.OutputStream
  * The bits are written in big endian. Mutable and not thread-safe.
  * @see BitInputStream
  */
-public class BitOutputStream public constructor(out: OutputStream) : AutoCloseable {
+public class BitOutputStream public constructor(out: OutputStream) : BitOutput, AutoCloseable {
     private val output: OutputStream
 
     // The accumulated bits for the current byte, always in the range [0x00, 0xFF].
@@ -49,7 +50,7 @@ public class BitOutputStream public constructor(out: OutputStream) : AutoCloseab
      * Writes a bit to the stream. The specified bit must be 0 or 1.
      * @param b the bit to write, which must be 0 or 1
      */
-    public fun write(b: Int) {
+    public override fun write(b: Int) {
         require(!(b != 0 && b != 1)) { "Argument must be 0 or 1" }
         currentByte = (currentByte shl 1) or b
         numBitsFilled++

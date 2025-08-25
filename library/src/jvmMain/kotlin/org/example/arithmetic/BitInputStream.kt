@@ -20,6 +20,8 @@
  */
 package org.example.arithmetic
 
+import org.example.arithmetic.io.BitInput
+
 import java.io.EOFException
 import java.io.InputStream
 
@@ -29,7 +31,7 @@ import java.io.InputStream
  * Mutable and not thread-safe.
  * @see BitOutputStream
  */
-public class BitInputStream public constructor(inp: InputStream) : AutoCloseable {
+public class BitInputStream public constructor(inp: InputStream) : BitInput, AutoCloseable {
     private val input: InputStream
 
     // Either in the range [0x00, 0xFF] if bits are available, or -1 if end of stream is reached.
@@ -52,7 +54,7 @@ public class BitInputStream public constructor(inp: InputStream) : AutoCloseable
      * the end of stream is reached. The end of stream always occurs on a byte boundary.
      * @return the next bit of 0 or 1, or -1 for the end of stream
      */
-    public fun read(): Int {
+    public override fun read(): Int {
         if (currentByte == -1) return -1
         if (numBitsRemaining == 0) {
             currentByte = input.read()
@@ -70,7 +72,7 @@ public class BitInputStream public constructor(inp: InputStream) : AutoCloseable
      * @return the next bit of 0 or 1
      * @throws EOFException if the end of stream is reached
      */
-    public fun readNoEof(): Int {
+    public override fun readNoEof(): Int {
         val result = read()
         if (result != -1) return result
         else throw EOFException()
