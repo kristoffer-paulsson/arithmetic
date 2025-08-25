@@ -71,7 +71,8 @@ public abstract class AbstractPpmCompress {
         outer@ for (order in history.size downTo 0) {
             var ctx: PpmModel.Context = model.rootContext
             for (i in 0..<order) {
-                if (ctx.subcontexts.isEmpty()) throw AssertionError()
+                //if (ctx.subcontexts.isEmpty()) throw AssertionError()
+                check(ctx.subcontexts.isNotEmpty())
                 ctx = ctx.subcontexts[history[i]]
                 if (ctx === PpmModel.nullCtx) continue@outer
             }
