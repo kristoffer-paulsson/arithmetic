@@ -27,6 +27,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.Arrays
+import kotlin.collections.removeLast
 
 /**
  * Decompression application using prediction by partial matching (PPM) with arithmetic coding.
@@ -63,7 +64,7 @@ public object PpmDecompress {
         // is 0 in all other contexts (which have non-negative order).
         val dec: ArithmeticDecoder = ArithmeticDecoder(32, inp)
         val model: PpmModel = PpmModel(MODEL_ORDER, 257, 256)
-        var history = IntArray(0)
+        var history = mutableListOf<Int>()
 
         while (true) {
             // Decode and write one byte
@@ -75,14 +76,16 @@ public object PpmDecompress {
 
             if (model.modelOrder >= 1) {
                 // Prepend current symbol, dropping oldest symbol if necessary
-                if (history.size < model.modelOrder) history = Arrays.copyOf(history, history.size + 1)
+                /*if (history.size < model.modelOrder) history = Arrays.copyOf(history, history.size + 1)
                 System.arraycopy(history, 0, history, 1, history.size - 1)
-                history[0] = symbol
+                history[0] = symbol*/
+                history.add(symbol)
+                if (history.size >= model.modelOrder) history.removeLast()
             }
         }
     }
 
-    private fun decodeSymbol(dec: ArithmeticDecoder, model: PpmModel, history: IntArray): Int {
+    private fun decodeSymbol(dec: ArithmeticDecoder, model: PpmModel, history: MutableList<Int>): Int {
         // Try to use highest order context that exists based on the history suffix. When symbol 256
         // is consumed at a context at any non-negative order, it means "escape to the next lower order
         // with non-empty context". When symbol 256 is consumed at the order -1 context, it means "EOF".

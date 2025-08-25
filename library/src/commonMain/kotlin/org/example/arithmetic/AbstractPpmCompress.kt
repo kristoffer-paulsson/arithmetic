@@ -20,13 +20,8 @@
  */
 package org.example.arithmetic
 
-import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.util.Arrays
+import org.example.arithmetic.io.BitOutput
+import org.example.arithmetic.io.ByteInput
 
 /**
  * Compression application using prediction by partial matching (PPM) with arithmetic coding.
@@ -38,36 +33,17 @@ import java.util.Arrays
  * Note that both the compressor and decompressor need to use the same PPM context modeling logic.
  * The PPM algorithm can be thought of as a powerful generalization of adaptive arithmetic coding.
  */
-public object PpmCompress : AbstractPpmCompress() {
+public abstract class AbstractPpmCompress {
     // Must be at least -1 and match PpmDecompress. Warning: Exponential memory usage at O(257^n).
-    private const val MODEL_ORDER = 3
-
-    public fun main(args: Array<String>) {
-        // Handle command line arguments
-        if (args.size != 2) {
-            System.err.println("Usage: java PpmCompress InputFile OutputFile")
-            System.exit(1)
-            return
-        }
-        val inputFile: File = File(args[0])
-        val outputFile: File = File(args[1])
-
-        BufferedInputStream(FileInputStream(inputFile)).use { inp ->
-            BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { out ->
-                compress(ByteInputWrapper(inp), out)
-            }
-        }
-    }
-
 
     // To allow unit testing, this method is package-private instead of private.
-    /*public fun compress(inp: InputStream, out: BitOutputStream) {
+    public fun compress(inp: ByteInput, out: BitOutput) {
         // Set up encoder and model. In this PPM model, symbol 256 represents EOF;
         // its frequency is 1 in the order -1 context but its frequency
         // is 0 in all other contexts (which have non-negative order).
         val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
         val model: PpmModel = PpmModel(MODEL_ORDER, 257, 256)
-        var history = IntArray(0)
+        var history = mutableListOf<Int>()
 
         while (true) {
             // Read and encode one byte
@@ -78,17 +54,19 @@ public object PpmCompress : AbstractPpmCompress() {
 
             if (model.modelOrder >= 1) {
                 // Prepend current symbol, dropping oldest symbol if necessary
-                if (history.size < model.modelOrder) history = Arrays.copyOf(history, history.size + 1)
-                System.arraycopy(history, 0, history, 1, history.size - 1)
-                history[0] = symbol
+                /*if (history.size < model.modelOrder) history = history.copyOf(history.size + 1)
+                history.copyInto(history, 1, 0, history.size - 1)
+                history[0] = symbol*/
+                history.add(symbol)
+                if (history.size >= model.modelOrder) history.removeLast()
             }
         }
 
         encodeSymbol(model, history, 256, enc) // EOF
         enc.finish() // Flush remaining code bits
-    }*/
+    }
 
-    /*private fun encodeSymbol(model: PpmModel, history: IntArray, symbol: Int, enc: ArithmeticEncoder) {
+    private fun encodeSymbol(model: PpmModel, history: MutableList<Int>, symbol: Int, enc: ArithmeticEncoder) {
         // Try to use highest order context that exists based on the history suffix, such
         // that the next symbol has non-zero frequency. When symbol 256 is produced at a context
         // at any non-negative order, it means "escape to the next lower order with non-empty
@@ -109,5 +87,9 @@ public object PpmCompress : AbstractPpmCompress() {
         }
         // Logic for order = -1
         enc.write(model.orderMinus1Freqs, symbol)
-    }*/
+    }
+
+    public companion object{
+        private const val MODEL_ORDER = 3
+    }
 }

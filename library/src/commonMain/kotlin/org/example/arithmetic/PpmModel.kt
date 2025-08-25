@@ -42,7 +42,7 @@ public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
         orderMinus1Freqs = FlatFrequencyTable(symbolLimit)
     }
 
-    public fun incrementContexts(history: IntArray, symbol: Int) {
+    public fun incrementContexts(history: MutableList<Int>, symbol: Int) {
         if (modelOrder == -1) return
         require(history.size <= modelOrder && 0 <= symbol && symbol < symbolLimit)
 

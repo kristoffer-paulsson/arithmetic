@@ -15,15 +15,16 @@ import java.io.IOException
 import java.io.InputStream
 
 /**
- * Tests [PpmCompress] coupled with [PpmDecompress].
+ * Tests [AbstractPpmCompress] coupled with [PpmDecompress].
  */
 class PpmCompressTest : ArithmeticCodingTest() {
     @Throws(IOException::class)
     override fun compress(b: ByteArray): ByteArray {
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
+        val ppmCompress = object : AbstractPpmCompress() {}
         BitOutputStream(out).use { bitOut ->
-            PpmCompress.compress(`in`, bitOut)
+            ppmCompress.compress(ByteInputWrapper(`in`), bitOut)
         }
         return out.toByteArray()
     }
