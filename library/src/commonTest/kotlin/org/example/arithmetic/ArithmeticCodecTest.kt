@@ -6,14 +6,18 @@ import kotlin.test.Test
 
 class ArithmeticCodecTest {
 
-
     @Test
     fun testEncodeDecode() {
         val encoder = object : AbstractArithmeticCompress() {}
-        val output = ByteArray(lipsum.size + 2048) // Extra space for compression overhead
+        val output = ByteArray(lipsum.size + 1024) // Extra space for compression overhead
         val outputBuffer = BitOutputBuffer(output)
 
         val freqs: FrequencyTable = encoder.getFrequencies(ByteInputBuffer(lipsum))
+
+        /*val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
+        for (x in lipsum) freqs.increment(x.toInt() and 0xFF)
+        freqs.increment(256) // EOF symbol gets a frequency of 1*/
+
         encoder.writeFrequencies(outputBuffer, freqs)
         encoder.compress(freqs, ByteInputBuffer(lipsum), outputBuffer)
 

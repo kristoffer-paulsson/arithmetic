@@ -45,8 +45,15 @@ public abstract class AbstractArithmeticCompress {
             if (b == -1) break
             freqs.increment(b)
         }
+        freqs.increment(256)
         return freqs
     }
+
+    /**
+     *         val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
+     *         for (x in lipsum) freqs.increment(x.toInt() and 0xFF)
+     *         freqs.increment(256) // EOF symbol gets a frequency of 1
+     * */
 
 
     // To allow unit testing, this method is package-private instead of private.
