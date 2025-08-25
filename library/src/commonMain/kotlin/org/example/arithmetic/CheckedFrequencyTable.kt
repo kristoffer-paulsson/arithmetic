@@ -70,11 +70,13 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
         if (isSymbolInRange(symbol)) {
             val low: Int = freqTable.getLow(symbol)
             val high: Int = freqTable.getHigh(symbol)
-            if (!(low in 0..high && high <= freqTable.getTotal())) throw AssertionError("Symbol high cumulative frequency out of range")
+            //if (!(low in 0..high && high <= freqTable.getTotal())) throw AssertionError("Symbol high cumulative frequency out of range")
+            check(low in 0..high && high <= freqTable.getTotal()) { "Symbol high cumulative frequency out of range" }
             return high
         } else {
             freqTable.getHigh(symbol)
-            throw AssertionError("IllegalArgumentException expected")
+            throw IllegalArgumentException()
+            //throw AssertionError("IllegalArgumentException expected")
         }
     }
 
@@ -84,12 +86,14 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
 
     public override fun set(symbol: Int, freq: Int) {
         freqTable.set(symbol, freq)
-        if (!isSymbolInRange(symbol) || freq < 0) throw AssertionError("IllegalArgumentException expected")
+        // if (!isSymbolInRange(symbol) || freq < 0) throw AssertionError("IllegalArgumentException expected")
+        require(isSymbolInRange(symbol) && freq >= 0)
     }
 
     public override fun increment(symbol: Int) {
         freqTable.increment(symbol)
-        if (!isSymbolInRange(symbol)) throw AssertionError("IllegalArgumentException expected")
+        //if (!isSymbolInRange(symbol)) throw AssertionError("IllegalArgumentException expected")
+        require(isSymbolInRange(symbol))
     }
 
     private fun isSymbolInRange(symbol: Int): Boolean {
