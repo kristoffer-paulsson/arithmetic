@@ -20,15 +20,14 @@
  */
 package org.example.arithmetic
 
-import java.io.IOException
-import java.util.Objects
+import org.example.arithmetic.io.BitInput
 
 /**
  * Reads from an arithmetic-coded bit stream and decodes symbols. Not thread-safe.
  * @see ArithmeticEncoder
  */
-public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInputStream) : ArithmeticCoderBase(numBits) {
-    private val input: BitInputStream
+public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) : ArithmeticCoderBase(numBits) {
+    private val input: BitInput
 
     // The current raw code bits being buffered, which is always in the range [low, high].
     private var code: Long = 0

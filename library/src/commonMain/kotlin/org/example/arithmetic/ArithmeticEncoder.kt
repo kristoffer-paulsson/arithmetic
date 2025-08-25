@@ -33,7 +33,6 @@ public class ArithmeticEncoder public constructor(numBits: Int, out: BitOutput) 
     // so a truly correct implementation would use a BigInteger.
     private var numUnderflow = 0
 
-
     /**
      * Constructs an arithmetic coding encoder based on the specified bit output stream.
      * @param numBits the number of bits for the arithmetic coding range
@@ -91,7 +90,6 @@ public class ArithmeticEncoder public constructor(numBits: Int, out: BitOutput) 
             numUnderflow--
         }
     }
-
 
     override fun underflow() {
         if (numUnderflow == Int.MAX_VALUE) throw ArithmeticException("Maximum underflow reached")
