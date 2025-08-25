@@ -57,7 +57,8 @@ public abstract class AbstractArithmeticDecompress {
         require(numBits in 0..32)
 
         var result = 0
-        for (i in 0..<numBits) result = (result shl 1) or inp.readNoEof() // Big endian
+        repeat(numBits) { result = (result shl 1) or inp.readNoEof() }
+        //for (i in 0..<numBits) result = (result shl 1) or inp.readNoEof() // Big endian
 
         return result
     }

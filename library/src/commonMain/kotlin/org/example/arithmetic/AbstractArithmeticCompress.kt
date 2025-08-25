@@ -51,7 +51,8 @@ public abstract class AbstractArithmeticCompress {
 
     // To allow unit testing, this method is package-private instead of private.
     public fun writeFrequencies(out: BitOutput, freqs: FrequencyTable) {
-        for (i in 0..255) writeInt(out, 32, freqs.get(i))
+        //for (i in 0..255) writeInt(out, 32, freqs.get(i))
+        repeat(256) { writeInt(out, 32, freqs.get(it)) }
     }
 
 

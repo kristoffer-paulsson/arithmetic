@@ -41,7 +41,8 @@ public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) :
      * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
      */
     init {
-        for (i in 0..<numStateBits) code = code shl 1 or readCodeBit().toLong()
+        repeat(numStateBits) { code = code shl 1 or readCodeBit().toLong() }
+        //for (i in 0..<numStateBits) code = code shl 1 or readCodeBit().toLong()
     }
 
     /**
