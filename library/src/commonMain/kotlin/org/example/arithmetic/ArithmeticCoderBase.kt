@@ -118,9 +118,11 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
      */
     protected fun update(freqs: CheckedFrequencyTable, symbol: Int) {
         // State check
-        if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw AssertionError("Low or high out of range")
+        check(!(low >= high || (low and stateMask) != low || (high and stateMask) != high)) { "Low or high out of range" }
+        // if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw AssertionError("Low or high out of range")
         val range = high - low + 1
-        if (range !in minimumRange..fullRange) throw AssertionError("Range out of range")
+        check(range >= minimumRange) { "Range too small" }
+        //if (range !in minimumRange..fullRange) throw AssertionError("Range out of range")
 
 
         // Frequency table values check
