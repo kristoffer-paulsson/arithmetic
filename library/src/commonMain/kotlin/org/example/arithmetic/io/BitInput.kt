@@ -17,4 +17,10 @@
 package org.example.arithmetic.io
 
 public interface BitInput {
+
+    public fun read(): Int
+
+    public fun readNoEof(): Int
+
+    public fun close()
 }
