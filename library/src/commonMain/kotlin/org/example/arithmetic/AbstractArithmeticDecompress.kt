@@ -42,7 +42,7 @@ public abstract class AbstractArithmeticDecompress {
 
     // To allow unit testing, this method is package-private instead of private.
     public fun decompress(freqs: FrequencyTable, inp: BitInput, out: ByteOutput) {
-        val dec: ArithmeticDecoder = ArithmeticDecoder(32, inp)
+        val dec = ArithmeticDecoder(32, inp)
         while (true) {
             val symbol: Int = dec.read(freqs)
             if (symbol == 256)  // EOF symbol

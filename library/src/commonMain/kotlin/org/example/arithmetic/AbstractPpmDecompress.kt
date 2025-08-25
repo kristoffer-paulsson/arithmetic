@@ -37,8 +37,8 @@ public abstract class AbstractPpmDecompress {
         // Set up decoder and model. In this PPM model, symbol 256 represents EOF;
         // its frequency is 1 in the order -1 context but its frequency
         // is 0 in all other contexts (which have non-negative order).
-        val dec: ArithmeticDecoder = ArithmeticDecoder(32, inp)
-        val model: PpmModel = PpmModel(MODEL_ORDER, 257, 256)
+        val dec = ArithmeticDecoder(32, inp)
+        val model = PpmModel(MODEL_ORDER, 257, 256)
         val history = mutableListOf<Int>()
 
         while (true) {

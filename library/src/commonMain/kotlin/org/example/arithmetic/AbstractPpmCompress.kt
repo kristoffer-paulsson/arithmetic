@@ -41,8 +41,8 @@ public abstract class AbstractPpmCompress {
         // Set up encoder and model. In this PPM model, symbol 256 represents EOF;
         // its frequency is 1 in the order -1 context but its frequency
         // is 0 in all other contexts (which have non-negative order).
-        val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
-        val model: PpmModel = PpmModel(MODEL_ORDER, 257, 256)
+        val enc = ArithmeticEncoder(32, out)
+        val model = PpmModel(MODEL_ORDER, 257, 256)
         val history = mutableListOf<Int>()
 
         while (true) {

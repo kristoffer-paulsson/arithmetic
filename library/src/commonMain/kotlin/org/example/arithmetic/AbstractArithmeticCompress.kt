@@ -57,7 +57,7 @@ public abstract class AbstractArithmeticCompress {
 
     // To allow unit testing, this method is package-private instead of private.
     public fun compress(freqs: FrequencyTable, inp: ByteInput, out: BitOutput) {
-        val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
+        val enc = ArithmeticEncoder(32, out)
         while (true) {
             val symbol: Int = inp.read()
             if (symbol == -1) break
