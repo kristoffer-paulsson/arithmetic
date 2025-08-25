@@ -29,4 +29,10 @@ public class ByteOutputBuffer(private val buffer: ByteArray) : ByteOutput {
         if (position >= buffer.size) throw EOFException("Buffer overflow")
         buffer[position++] = b.toByte()
     }
+
+    /**
+     * Returns a new byte array containing the written bytes.
+     * @return a new byte array containing the written bytes
+     */
+    public fun toByteArray(): ByteArray = buffer.copyOfRange(0, position)
 }

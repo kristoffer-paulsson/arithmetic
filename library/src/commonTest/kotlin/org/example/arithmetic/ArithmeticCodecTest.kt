@@ -1,28 +1,40 @@
 package org.example.arithmetic
 
+import org.example.arithmetic.io.BitInputBuffer
 import org.example.arithmetic.io.BitOutputBuffer
 import org.example.arithmetic.io.ByteInputBuffer
+import org.example.arithmetic.io.ByteOutputBuffer
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class ArithmeticCodecTest {
 
     @Test
     fun testEncodeDecode() {
         val encoder = object : AbstractArithmeticCompress() {}
-        val output = ByteArray(lipsum.size + 1024) // Extra space for compression overhead
-        val outputBuffer = BitOutputBuffer(output)
+        val compressed = ByteArray(lipsum.size + 1024) // Extra space for compression overhead
+        val compressedBuffer = BitOutputBuffer(compressed)
 
-        val freqs: FrequencyTable = encoder.getFrequencies(ByteInputBuffer(lipsum))
+        val writefreqs = encoder.getFrequencies(ByteInputBuffer(lipsum))
 
-        /*val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
-        for (x in lipsum) freqs.increment(x.toInt() and 0xFF)
-        freqs.increment(256) // EOF symbol gets a frequency of 1*/
+        encoder.writeFrequencies(compressedBuffer, writefreqs)
+        encoder.compress(writefreqs, ByteInputBuffer(lipsum), compressedBuffer)
 
-        encoder.writeFrequencies(outputBuffer, freqs)
-        encoder.compress(freqs, ByteInputBuffer(lipsum), outputBuffer)
+        assertTrue { lipsum.size > compressedBuffer.toByteArray().size }
 
         println("Original size: ${lipsum.size} bytes")
-        println("Compressed size: ${outputBuffer.toByteArray().size} bytes")
+        println("Compressed size: ${compressedBuffer.toByteArray().size} bytes")
+
+        val decoder = object : AbstractArithmeticDecompress() {}
+        val decompressed = ByteArray(lipsum.size + 1024) // Extra space for decompression overhead
+        val decompressedBuffer = ByteOutputBuffer(decompressed)
+        val compressedData = BitInputBuffer(compressedBuffer.toByteArray())
+
+        val readFreqs = decoder.readFrequencies(compressedData);
+        decoder.decompress(readFreqs, compressedData, decompressedBuffer)
+
+        val decompressedData = decompressedBuffer.toByteArray().copyOfRange(1024, 1024 + lipsum.size)
+        assertTrue { lipsum.contentEquals(decompressedData) }
     }
 
     companion object {
