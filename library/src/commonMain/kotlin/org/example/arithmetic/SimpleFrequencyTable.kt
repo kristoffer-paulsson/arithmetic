@@ -45,8 +45,8 @@ public class SimpleFrequencyTable : FrequencyTable {
      * @throws ArithmeticException if the total of `freqs` exceeds `Integer.MAX_VALUE`
      */
     public constructor(freqs: IntArray) {
-        require(freqs.size >= 1) { "At least 1 symbol needed" }
-        require(!(freqs.size > Int.MAX_VALUE - 1)) { "Too many symbols" }
+        require(freqs.isNotEmpty()) { "At least 1 symbol needed" }
+        require(freqs.size <= Int.MAX_VALUE - 1) { "Too many symbols" }
 
         frequencies = freqs.clone() // Make copy
         total = 0
