@@ -27,22 +27,11 @@ import org.example.arithmetic.io.BitOutput
  * @see org.example.arithmetic.ArithmeticDecoder
  */
 public class ArithmeticEncoder public constructor(numBits: Int, out: BitOutput) : ArithmeticCoderBase(numBits) {
-    private val output: BitOutput
+    private val output: BitOutput = out
 
     // Number of saved underflow bits. This value can grow without bound,
     // so a truly correct implementation would use a BigInteger.
     private var numUnderflow = 0
-
-    /**
-     * Constructs an arithmetic coding encoder based on the specified bit output stream.
-     * @param numBits the number of bits for the arithmetic coding range
-     * @param out the bit output stream to write to
-     * @throws NullPointerException if the output stream is `null`
-     * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
-     */
-    init {
-        output = out
-    }
 
     /**
      * Encodes the specified symbol based on the specified frequency table.

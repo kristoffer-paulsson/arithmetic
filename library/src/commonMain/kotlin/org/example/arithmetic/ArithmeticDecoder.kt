@@ -27,7 +27,7 @@ import org.example.arithmetic.io.BitInput
  * @see ArithmeticEncoder
  */
 public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) : ArithmeticCoderBase(numBits) {
-    private val input: BitInput
+    private val input: BitInput = inp
 
     // The current raw code bits being buffered, which is always in the range [low, high].
     private var code: Long = 0
@@ -41,7 +41,6 @@ public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) :
      * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
      */
     init {
-        input = inp
         for (i in 0..<numStateBits) code = code shl 1 or readCodeBit().toLong()
     }
 
@@ -68,12 +67,12 @@ public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) :
     public fun read(freqs: CheckedFrequencyTable): Int {
         // Translate from coding range scale to frequency table scale
         val total: Long = freqs.getTotal().toLong() // Fix
-        require(!(total > maximumTotal)) { "Cannot decode symbol because total is too large" }
+        require(total <= maximumTotal) { "Cannot decode symbol because total is too large" }
         val range: Long = high - low + 1
         val offset: Long = code - low
         val value = ((offset + 1) * total - 1) / range
         if (value * range / total > offset) throw AssertionError()
-        if (!(0 <= value && value < total)) throw AssertionError()
+        if (value !in 0..<total) throw AssertionError()
 
 
         // A kind of binary search. Find highest symbol such that freqs.getLow(symbol) <= value.
@@ -89,7 +88,7 @@ public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) :
         val symbol = start
         if (!(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)) throw AssertionError()
         update(freqs, symbol)
-        if (!(low <= code && code <= high)) throw AssertionError("Code out of range")
+        if (code !in low..high) throw AssertionError("Code out of range")
         return symbol
     }
 
