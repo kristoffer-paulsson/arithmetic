@@ -21,7 +21,6 @@
 package org.example.arithmetic.io
 
 public abstract class AbstractBitInput<E>(inp: E): BitInput {
-
     protected val input: E = inp
 
     // Either in the range [0x00, 0xFF] if bits are available, or -1 if end of stream is reached.
