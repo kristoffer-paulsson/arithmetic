@@ -17,4 +17,12 @@
 package org.example.arithmetic.io
 
 public interface ByteOutput {
+
+    /**
+     * Writes the specified byte (the low eight bits of the argument b).
+     * @param b the byte to write, which must be in the range 0 to 255
+     * @throws IllegalArgumentException if `b` is outside the range 0 to 255
+     * @throws java.io.IOException if an I/O exception occurred
+     */
+    public fun write(b: Int)
 }
