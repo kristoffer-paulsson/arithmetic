@@ -26,15 +26,14 @@ class ArithmeticCodecTest {
         println("Compressed size: ${compressedBuffer.toByteArray().size} bytes")
 
         val decoder = object : AbstractArithmeticDecompress() {}
-        val decompressed = ByteArray(lipsum.size + 1024) // Extra space for decompression overhead
+        val decompressed = ByteArray(lipsum.size) // Extra space for decompression overhead
         val decompressedBuffer = ByteOutputBuffer(decompressed)
         val compressedData = BitInputBuffer(compressedBuffer.toByteArray())
 
         val readFreqs = decoder.readFrequencies(compressedData);
         decoder.decompress(readFreqs, compressedData, decompressedBuffer)
 
-        val decompressedData = decompressedBuffer.toByteArray().copyOfRange(1024, 1024 + lipsum.size)
-        assertTrue { lipsum.contentEquals(decompressedData) }
+        assertTrue { lipsum.contentEquals(decompressed) }
     }
 
     companion object {

@@ -20,7 +20,7 @@ public class BitOutputBuffer(buffer: ByteArray) : AbstractBitOutput<ByteArray>(b
     private var position = 0
 
     override fun writeImpl(b: Int) {
-        output[position++] = b.toByte()
+        output[position++] = (b and 0xFF).toByte()
     }
 
     override fun closeImpl() {

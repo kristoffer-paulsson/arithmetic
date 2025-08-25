@@ -62,7 +62,6 @@ public abstract class AbstractArithmeticCompress {
         repeat(256) { writeInt(out, 32, freqs.get(it)) }
     }
 
-
     // To allow unit testing, this method is package-private instead of private.
     public fun compress(freqs: FrequencyTable, inp: ByteInput, out: BitOutput) {
         val enc = ArithmeticEncoder(32, out)
@@ -74,7 +73,6 @@ public abstract class AbstractArithmeticCompress {
         enc.write(freqs, 256) // EOF
         enc.finish() // Flush remaining code bits
     }
-
 
     // Writes an unsigned integer of the given bit width to the given stream.
     private fun writeInt(out: BitOutput, numBits: Int, value: Int) {

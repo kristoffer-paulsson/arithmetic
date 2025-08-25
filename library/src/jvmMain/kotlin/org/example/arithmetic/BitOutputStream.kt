@@ -20,6 +20,7 @@
  */
 package org.example.arithmetic
 
+import org.example.arithmetic.io.AbstractBitOutput
 import org.example.arithmetic.io.BitOutput
 import java.io.OutputStream
 
@@ -29,28 +30,28 @@ import java.io.OutputStream
  * The bits are written in big endian. Mutable and not thread-safe.
  * @see BitInputStream
  */
-public class BitOutputStream public constructor(out: OutputStream) : BitOutput, AutoCloseable {
-    private val output: OutputStream
+public class BitOutputStream(out: OutputStream) : AbstractBitOutput<OutputStream>(out), AutoCloseable {
+    //private val output: OutputStream
 
     // The accumulated bits for the current byte, always in the range [0x00, 0xFF].
-    private var currentByte = 0
+    //private var currentByte = 0
 
     // Number of accumulated bits in the current byte, always between 0 and 7 (inclusive).
-    private var numBitsFilled = 0
+    //private var numBitsFilled = 0
 
     /**
      * Constructs a bit output stream based on the specified byte output stream.
      * @param out the byte output stream
      */
-    init {
+    /*init {
         output = out
-    }
+    }*/
 
     /**
      * Writes a bit to the stream. The specified bit must be 0 or 1.
      * @param b the bit to write, which must be 0 or 1
      */
-    public override fun write(b: Int) {
+    /*public override fun write(b: Int) {
         require(!(b != 0 && b != 1)) { "Argument must be 0 or 1" }
         currentByte = (currentByte shl 1) or b
         numBitsFilled++
@@ -59,7 +60,7 @@ public class BitOutputStream public constructor(out: OutputStream) : BitOutput, 
             currentByte = 0
             numBitsFilled = 0
         }
-    }
+    }*/
 
 
     /**
@@ -67,8 +68,15 @@ public class BitOutputStream public constructor(out: OutputStream) : BitOutput, 
      * bit stream is not at a byte boundary, then the minimum number of "0" bits
      * (between 0 and 7 of them) are written as padding to reach the next byte boundary.
      */
-    public override fun close() {
+    /*public override fun close() {
         while (numBitsFilled != 0) write(0)
+        output.close()
+    }*/
+    override fun writeImpl(b: Int) {
+        output.write(b)
+    }
+
+    override fun closeImpl() {
         output.close()
     }
 }
