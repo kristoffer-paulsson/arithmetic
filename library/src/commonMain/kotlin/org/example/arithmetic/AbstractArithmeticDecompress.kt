@@ -35,7 +35,8 @@ public abstract class AbstractArithmeticDecompress {
     // To allow unit testing, this method is package-private instead of private.
     public fun readFrequencies(inp: BitInput): FrequencyTable {
         val freqs = IntArray(257)
-        for (i in 0..255) freqs[i] = readInt(inp, 32)
+        //for (i in 0..255) freqs[i] = readInt(inp, 32)
+        repeat(256) { freqs[it] = readInt(inp, 32) }
         freqs[256] = 1 // EOF symbol
         return SimpleFrequencyTable(freqs)
     }
