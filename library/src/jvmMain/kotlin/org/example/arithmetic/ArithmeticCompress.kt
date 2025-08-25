@@ -89,10 +89,10 @@ public object ArithmeticCompress {
 
     // To allow unit testing, this method is package-private instead of private.
     @Throws(IOException::class)
-    public fun compress(freqs: FrequencyTable, `in`: InputStream, out: BitOutputStream) {
+    public fun compress(freqs: FrequencyTable, inp: InputStream, out: BitOutputStream) {
         val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
         while (true) {
-            val symbol: Int = `in`.read()
+            val symbol: Int = inp.read()
             if (symbol == -1) break
             enc.write(freqs, symbol)
         }
