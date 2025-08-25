@@ -121,9 +121,8 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
         check(!(low >= high || (low and stateMask) != low || (high and stateMask) != high)) { "Low or high out of range" }
         // if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw AssertionError("Low or high out of range")
         val range = high - low + 1
-        check(range >= minimumRange) { "Range too small" }
+        check(range in minimumRange..fullRange) { "Range too small" }
         //if (range !in minimumRange..fullRange) throw AssertionError("Range out of range")
-
 
         // Frequency table values check
         val total: Long = freqs.getTotal().toLong() // Fix
