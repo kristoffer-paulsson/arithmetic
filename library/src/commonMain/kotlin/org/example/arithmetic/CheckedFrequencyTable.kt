@@ -30,7 +30,8 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
 
     public override fun getSymbolLimit(): Int {
         val result: Int = freqTable.getSymbolLimit()
-        if (result <= 0) throw AssertionError("Non-positive symbol limit")
+        check(result > 0) { "Non-positive symbol limit" }
+        // if (result <= 0) throw AssertionError("Non-positive symbol limit")
         return result
     }
 
