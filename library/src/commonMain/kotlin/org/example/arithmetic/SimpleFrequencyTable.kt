@@ -112,7 +112,8 @@ public class SimpleFrequencyTable : FrequencyTable {
         require(freq >= 0) { "Negative frequency" }
 
         val temp = total - frequencies[symbol]
-        if (temp < 0) throw AssertionError()
+        //if (temp < 0) throw AssertionError()
+        check(temp >= 0)
         total = Math.addExact(temp, freq)
         frequencies[symbol] = freq
         cumulative = null
@@ -176,7 +177,8 @@ public class SimpleFrequencyTable : FrequencyTable {
             sum = Math.addExact(frequencies[i], sum)
             cumulative!![i + 1] = sum
         }
-        if (sum != total) throw AssertionError()
+        //if (sum != total) throw AssertionError()
+        check(sum == total)
     }
 
     // Returns silently if 0 <= symbol < frequencies.length, otherwise throws an exception.
