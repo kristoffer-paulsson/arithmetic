@@ -21,13 +21,13 @@
 package org.example.arithmetic.io
 
 public abstract class AbstractBitOutput<E>(out: E): BitOutput {
-    private val output: E = out
+    protected val output: E = out
 
     // The accumulated bits for the current byte, always in the range [0x00, 0xFF].
-    private var currentByte = 0
+    protected var currentByte: Int = 0
 
     // Number of accumulated bits in the current byte, always between 0 and 7 (inclusive).
-    private var numBitsFilled = 0
+    protected var numBitsFilled: Int = 0
 
     protected abstract fun writeImpl(b: Int)
 

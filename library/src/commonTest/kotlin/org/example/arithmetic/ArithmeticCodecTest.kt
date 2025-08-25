@@ -1,5 +1,7 @@
 package org.example.arithmetic
 
+import org.example.arithmetic.io.BitOutputBuffer
+import org.example.arithmetic.io.ByteInputBuffer
 import kotlin.test.Test
 
 class ArithmeticCodecTest {
@@ -7,20 +9,16 @@ class ArithmeticCodecTest {
 
     @Test
     fun testEncodeDecode() {
-        val original = lipsum
         val encoder = object : AbstractArithmeticCompress() {}
+        val output = ByteArray(lipsum.size + 2048) // Extra space for compression overhead
+        val outputBuffer = BitOutputBuffer(output)
 
-        val freqs: FrequencyTable = encoder.getFrequencies(original)
+        val freqs: FrequencyTable = encoder.getFrequencies(ByteInputBuffer(lipsum))
+        encoder.writeFrequencies(outputBuffer, freqs)
+        encoder.compress(freqs, ByteInputBuffer(lipsum), outputBuffer)
 
-        val freqs: FrequencyTable = getFrequencies(ByteInputWrapper(FileInputStream(inputFile)))
-        freqs.increment(256) // EOF symbol gets a frequency of 1
-
-        BufferedInputStream(FileInputStream(inputFile)).use { inp ->
-            BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { out ->
-                writeFrequencies(out, freqs)
-                compress(freqs, ByteInputWrapper(inp), out)
-            }
-        }
+        println("Original size: ${lipsum.size} bytes")
+        println("Compressed size: ${outputBuffer.toByteArray().size} bytes")
     }
 
     companion object {
