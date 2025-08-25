@@ -15,25 +15,25 @@ import java.io.IOException
 import java.io.InputStream
 
 /**
- * Tests [AdaptiveArithmeticCompress] coupled with [AdaptiveArithmeticDecompress].
+ * Tests [AbstractAdaptiveArithmeticCompress] coupled with [AbstractAdaptiveArithmeticDecompress].
  */
 class AdaptiveArithmeticCompressTest : ArithmeticCodingTest() {
-    @Throws(IOException::class)
     override fun compress(b: ByteArray): ByteArray {
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
+        val adaptiveCompress = object : AbstractAdaptiveArithmeticCompress() {}
         BitOutputStream(out).use { bitOut ->
-            AdaptiveArithmeticCompress.compress(`in`, bitOut)
+            adaptiveCompress.compress(ByteInputWrapper(`in`), bitOut)
         }
         return out.toByteArray()
     }
 
 
-    @Throws(IOException::class)
     override fun decompress(b: ByteArray): ByteArray {
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
-        AdaptiveArithmeticDecompress.decompress(BitInputStream(`in`), out)
+        val adaptiveDecompress = object : AbstractAdaptiveArithmeticDecompress() {}
+        adaptiveDecompress.decompress(BitInputStream(`in`), ByteOutputWrapper(out))
         return out.toByteArray()
     }
 }

@@ -20,11 +20,8 @@
  */
 package org.example.arithmetic
 
-import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import org.example.arithmetic.io.BitOutput
+import org.example.arithmetic.io.ByteInput
 
 /**
  * Compression application using adaptive arithmetic coding.
@@ -38,21 +35,20 @@ import java.io.FileOutputStream
  * frequency table and updates it after each byte decoded. It is by design that the compressor and
  * decompressor have synchronized states, so that the data can be decompressed properly.
  */
-public object AdaptiveArithmeticCompress : AbstractAdaptiveArithmeticCompress(){
-    public fun main(args: Array<String>) {
-        // Handle command line arguments
-        if (args.size != 2) {
-            System.err.println("Usage: java AdaptiveArithmeticCompress InputFile OutputFile")
-            System.exit(1)
-            return
-        }
-        val inputFile = File(args[0])
-        val outputFile = File(args[1])
+public abstract class AbstractAdaptiveArithmeticCompress {
 
-        BufferedInputStream(FileInputStream(inputFile)).use { inp ->
-            BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { out ->
-                compress(ByteInputWrapper(inp), out)
-            }
+    public fun compress(inp: ByteInput, out: BitOutput) {
+        val initFreqs = FlatFrequencyTable(257)
+        val freqs: FrequencyTable = SimpleFrequencyTable(initFreqs)
+        val enc = ArithmeticEncoder(32, out)
+        while (true) {
+            // Read and encode one byte
+            val symbol: Int = inp.read()
+            if (symbol == -1) break
+            enc.write(freqs, symbol)
+            freqs.increment(symbol)
         }
+        enc.write(freqs, 256) // EOF
+        enc.finish() // Flush remaining code bits
     }
 }
