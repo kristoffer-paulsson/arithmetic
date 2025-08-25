@@ -70,7 +70,7 @@ public abstract class AbstractArithmeticCompress {
 
     // Writes an unsigned integer of the given bit width to the given stream.
     private fun writeInt(out: BitOutput, numBits: Int, value: Int) {
-        require(!(numBits < 0 || numBits > 32))
+        require(numBits in 0..32)
 
         for (i in numBits - 1 downTo 0) out.write((value ushr i) and 1) // Big endian
     }

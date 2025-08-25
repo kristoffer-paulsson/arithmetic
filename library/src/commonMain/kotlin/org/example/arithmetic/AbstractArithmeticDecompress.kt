@@ -53,7 +53,7 @@ public abstract class AbstractArithmeticDecompress {
 
     // Reads an unsigned integer of the given bit width from the given stream.
     private fun readInt(inp: BitInput, numBits: Int): Int {
-        require(0 <= numBits && numBits <= 32)
+        require(numBits in 0..32)
 
         var result = 0
         for (i in 0..<numBits) result = (result shl 1) or inp.readNoEof() // Big endian
