@@ -64,11 +64,10 @@ public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
     }
 
     public class Context public constructor(symbols: Int, hasSubctx: Boolean) {
-        public val frequencies: FrequencyTable
+        public val frequencies: FrequencyTable = SimpleFrequencyTable(IntArray(symbols))
         public var subcontexts: Array<Context> = emptyArray()
 
         init {
-            frequencies = SimpleFrequencyTable(IntArray(symbols))
             if (hasSubctx) subcontexts = Array(symbols) { nullCtx }
             else subcontexts = emptyArray()
         }
