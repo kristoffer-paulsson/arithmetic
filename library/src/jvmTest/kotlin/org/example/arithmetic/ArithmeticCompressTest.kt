@@ -1,28 +1,36 @@
-/*
-* Reference arithmetic coding
-*
-* Copyright (c) 2025 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
-*
-* Copyright (c) Project Nayuki
-* MIT License. See readme file.
-* https://www.nayuki.io/page/reference-arithmetic-coding
-*/
+/**
+ * Reference arithmetic coding
+ *
+ * Copyright (c) 2025 by Kristoffer Paulsson <kristoffer.paulsson@talenten.se>.
+ *
+ * Copyright (c) Project Nayuki
+ * https://www.nayuki.io/page/reference-arithmetic-coding
+ *
+ * This software is available under the terms of the MIT license.
+ * The legal terms are attached to the LICENSE file and are made
+ * available on:
+ *
+ *      https://opensource.org/licenses/MIT
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * Contributors:
+ *      Nayuki - initial Java implementation
+ *      Kristoffer Paulsson - porting and adaption to Kotlin for alternative use
+ */
 package org.example.arithmetic
 
 import org.example.arithmetic.ArithmeticCompress.compress
 import org.example.arithmetic.ArithmeticCompress.writeFrequencies
-import org.example.arithmetic.ArithmeticDecompress.decompress
-import org.example.arithmetic.ArithmeticDecompress.readFrequencies
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.IOException
 import java.io.InputStream
 
 /**
- * Tests [ArithmeticCompress] coupled with [ArithmeticDecompress].
+ * Tests [ArithmeticCompress] coupled with [AbstractArithmeticDecompress].
  */
 class ArithmeticCompressTest : ArithmeticCodingTest() {
-    @Throws(IOException::class)
+
     override fun compress(b: ByteArray): ByteArray {
         val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
         for (x in b) freqs.increment(x.toInt() and 0xFF)
@@ -32,20 +40,21 @@ class ArithmeticCompressTest : ArithmeticCodingTest() {
         val out = ByteArrayOutputStream()
         BitOutputStream(out).use { bitOut ->
             writeFrequencies(bitOut, freqs)
-            compress(freqs, `in`, bitOut)
+            compress(freqs, ByteInputWrapper(`in`), bitOut)
         }
         return out.toByteArray()
     }
 
 
-    @Throws(IOException::class)
     override fun decompress(b: ByteArray): ByteArray {
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
         val bitIn = BitInputStream(`in`)
 
-        val freqs = readFrequencies(bitIn)
-        decompress(freqs, bitIn, out)
+        val arithmeticCompress = object : AbstractArithmeticDecompress() {}
+
+        val freqs = arithmeticCompress.readFrequencies(bitIn)
+        arithmeticCompress.decompress(freqs, bitIn, ByteOutputWrapper(out))
         return out.toByteArray()
     }
 }

@@ -22,13 +22,13 @@ package org.example.arithmetic.io
 
 public abstract class AbstarctBitInput<E> constructor(inp: E): BitInput {
 
-    private val input: E = inp
+    protected val input: E = inp
 
     // Either in the range [0x00, 0xFF] if bits are available, or -1 if end of stream is reached.
-    private var currentByte = 0
+    protected var currentByte: Int = 0
 
     // Number of remaining bits in the current byte, always between 0 and 7 (inclusive).
-    private var numBitsRemaining = 0
+    protected var numBitsRemaining: Int = 0
 
     /**
      * Reads a bit from this stream. Returns 0 or 1 if a bit is available, or -1 if

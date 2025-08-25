@@ -20,9 +20,8 @@
  */
 package org.example.arithmetic
 
-import org.example.arithmetic.io.BitInput
+import org.example.arithmetic.io.AbstarctBitInput
 
-import java.io.EOFException
 import java.io.InputStream
 
 /**
@@ -31,59 +30,13 @@ import java.io.InputStream
  * Mutable and not thread-safe.
  * @see BitOutputStream
  */
-public class BitInputStream public constructor(inp: InputStream) : BitInput, AutoCloseable {
-    private val input: InputStream
+public class BitInputStream public constructor(inp: InputStream) : AbstarctBitInput<InputStream>(inp), AutoCloseable {
 
-    // Either in the range [0x00, 0xFF] if bits are available, or -1 if end of stream is reached.
-    private var currentByte = 0
-
-    // Number of remaining bits in the current byte, always between 0 and 7 (inclusive).
-    private var numBitsRemaining = 0
-
-    /**
-     * Constructs a bit input stream based on the specified byte input stream.
-     * @param `in` the byte input stream
-     * @throws NullPointerException if the input stream is `null`
-     */
-    init {
-        input = inp
+    override fun readImpl(): Int {
+        return input.read()
     }
 
-    /**
-     * Reads a bit from this stream. Returns 0 or 1 if a bit is available, or -1 if
-     * the end of stream is reached. The end of stream always occurs on a byte boundary.
-     * @return the next bit of 0 or 1, or -1 for the end of stream
-     */
-    public override fun read(): Int {
-        if (currentByte == -1) return -1
-        if (numBitsRemaining == 0) {
-            currentByte = input.read()
-            if (currentByte == -1) return -1
-            numBitsRemaining = 8
-        }
-        if (numBitsRemaining <= 0) throw AssertionError()
-        numBitsRemaining--
-        return (currentByte ushr numBitsRemaining) and 1
-    }
-
-    /**
-     * Reads a bit from this stream. Returns 0 or 1 if a bit is available, or throws an `EOFException`
-     * if the end of stream is reached. The end of stream always occurs on a byte boundary.
-     * @return the next bit of 0 or 1
-     * @throws EOFException if the end of stream is reached
-     */
-    public override fun readNoEof(): Int {
-        val result = read()
-        if (result != -1) return result
-        else throw EOFException()
-    }
-
-    /**
-     * Closes this stream and the underlying input stream.
-     */
-    public override fun close() {
+    override fun closeImpl() {
         input.close()
-        currentByte = -1
-        numBitsRemaining = 0
     }
 }

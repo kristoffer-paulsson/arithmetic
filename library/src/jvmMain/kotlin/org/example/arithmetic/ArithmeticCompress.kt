@@ -26,7 +26,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 
 
 /**
@@ -40,8 +39,8 @@ import java.io.InputStream
  * values and 1 symbol for the EOF marker. The compressed file format starts with a list
  * of 256 symbol frequencies, and then followed by the arithmetic-coded data.
  */
-public object ArithmeticCompress {
-    @Throws(IOException::class)
+public object ArithmeticCompress : AbstractArithmeticCompress() {
+
     public fun main(args: Array<String>) {
         // Handle command line arguments
         if (args.size != 2) {
@@ -54,57 +53,14 @@ public object ArithmeticCompress {
 
 
         // Read input file once to compute symbol frequencies
-        val freqs: FrequencyTable = getFrequencies(inputFile)
+        val freqs: FrequencyTable = getFrequencies(ByteInputWrapper(FileInputStream(inputFile)))
         freqs.increment(256) // EOF symbol gets a frequency of 1
 
         BufferedInputStream(FileInputStream(inputFile)).use { inp ->
             BitOutputStream(BufferedOutputStream(FileOutputStream(outputFile))).use { out ->
                 writeFrequencies(out, freqs)
-                compress(freqs, inp, out)
+                compress(freqs, ByteInputWrapper(inp), out)
             }
         }
-    }
-
-
-    // Returns a frequency table based on the bytes in the given file.
-    // Also contains an extra entry for symbol 256, whose frequency is set to 0.
-    private fun getFrequencies(file: File): FrequencyTable {
-        val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
-        BufferedInputStream(FileInputStream(file)).use { input ->
-            while (true) {
-                val b: Int = input.read()
-                if (b == -1) break
-                freqs.increment(b)
-            }
-        }
-        return freqs
-    }
-
-
-    // To allow unit testing, this method is package-private instead of private.
-    public fun writeFrequencies(out: BitOutputStream, freqs: FrequencyTable) {
-        for (i in 0..255) writeInt(out, 32, freqs.get(i))
-    }
-
-
-    // To allow unit testing, this method is package-private instead of private.
-    @Throws(IOException::class)
-    public fun compress(freqs: FrequencyTable, inp: InputStream, out: BitOutputStream) {
-        val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
-        while (true) {
-            val symbol: Int = inp.read()
-            if (symbol == -1) break
-            enc.write(freqs, symbol)
-        }
-        enc.write(freqs, 256) // EOF
-        enc.finish() // Flush remaining code bits
-    }
-
-
-    // Writes an unsigned integer of the given bit width to the given stream.
-    private fun writeInt(out: BitOutputStream, numBits: Int, value: Int) {
-        require(!(numBits < 0 || numBits > 32))
-
-        for (i in numBits - 1 downTo 0) out.write((value ushr i) and 1) // Big endian
     }
 }

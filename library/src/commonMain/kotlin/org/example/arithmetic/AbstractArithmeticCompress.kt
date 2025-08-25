@@ -34,11 +34,11 @@ import org.example.arithmetic.io.ByteInput
  * values and 1 symbol for the EOF marker. The compressed file format starts with a list
  * of 256 symbol frequencies, and then followed by the arithmetic-coded data.
  */
-public object ArithmeticCompress {
+public abstract class AbstractArithmeticCompress {
 
     // Returns a frequency table based on the bytes in the given file.
     // Also contains an extra entry for symbol 256, whose frequency is set to 0.
-    private fun getFrequencies(input: ByteInput): FrequencyTable {
+    public fun getFrequencies(input: ByteInput): FrequencyTable {
         val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
         while (true) {
             val b: Int = input.read()
