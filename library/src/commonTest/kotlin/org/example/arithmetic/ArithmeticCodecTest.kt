@@ -9,9 +9,35 @@ import kotlin.test.assertTrue
 
 class ArithmeticCodecTest {
 
+    fun compress(b: ByteArray): ByteArray {
+
+        val arithmeticCompress = object : AbstractArithmeticCompress() {}
+
+        val freqs = arithmeticCompress.getFrequencies(ByteInputBuffer(b))
+
+        val inp = ByteInputBuffer(b)
+        val out = BitOutputBuffer(ByteArray(b.size + 1024)) // Extra space for compression overhead
+
+        arithmeticCompress.writeFrequencies(out, freqs)
+        arithmeticCompress.compress(freqs, inp, out)
+
+        return out.toByteArray()
+    }
+
+    fun decompress(b: ByteArray): ByteArray {
+        val inp = BitInputBuffer(b)
+        val out = ByteOutputBuffer(ByteArray(4096)) // Extra space for decompression overhead
+
+        val arithmeticDecompress = object : AbstractArithmeticDecompress() {}
+
+        val freqs = arithmeticDecompress.readFrequencies(inp)
+        arithmeticDecompress.decompress(freqs, inp, out)
+        return out.toByteArray()
+    }
+
     @Test
     fun testEncodeDecode() {
-        val encoder = object : AbstractArithmeticCompress() {}
+        /*val encoder = object : AbstractArithmeticCompress() {}
         val compressed = ByteArray(lipsum.size + 1024) // Extra space for compression overhead
         val compressedBuffer = BitOutputBuffer(compressed)
 
@@ -28,10 +54,14 @@ class ArithmeticCodecTest {
         val decoder = object : AbstractArithmeticDecompress() {}
         val decompressed = ByteArray(lipsum.size) // Extra space for decompression overhead
         val decompressedBuffer = ByteOutputBuffer(decompressed)
-        val compressedData = BitInputBuffer(compressedBuffer.toByteArray())
+        val compressedData = BitInputBuffer(compressed)
 
         val readFreqs = decoder.readFrequencies(compressedData);
-        decoder.decompress(readFreqs, compressedData, decompressedBuffer)
+        decoder.decompress(readFreqs, compressedData, decompressedBuffer)*/
+
+        val compressed = compress(lipsum)
+        assertTrue { lipsum.size > compressed.size }
+        val decompressed = decompress(compressed)
 
         assertTrue { lipsum.contentEquals(decompressed) }
     }

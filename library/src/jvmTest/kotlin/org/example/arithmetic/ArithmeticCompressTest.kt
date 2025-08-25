@@ -20,8 +20,6 @@
  */
 package org.example.arithmetic
 
-import org.example.arithmetic.ArithmeticCompress.compress
-import org.example.arithmetic.ArithmeticCompress.writeFrequencies
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -32,29 +30,33 @@ import java.io.InputStream
 class ArithmeticCompressTest : ArithmeticCodingTest() {
 
     override fun compress(b: ByteArray): ByteArray {
-        val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
+
+        val arithmeticCompress = object : AbstractArithmeticCompress() {}
+
+        /*val freqs: FrequencyTable = SimpleFrequencyTable(IntArray(257))
         for (x in b) freqs.increment(x.toInt() and 0xFF)
-        freqs.increment(256) // EOF symbol gets a frequency of 1
+        freqs.increment(256) // EOF symbol gets a frequency of 1*/
+
+        val freqs = arithmeticCompress.getFrequencies(ByteInputWrapper(ByteArrayInputStream(b)))
 
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
         BitOutputStream(out).use { bitOut ->
-            writeFrequencies(bitOut, freqs)
-            compress(freqs, ByteInputWrapper(`in`), bitOut)
+            arithmeticCompress.writeFrequencies(bitOut, freqs)
+            arithmeticCompress.compress(freqs, ByteInputWrapper(`in`), bitOut)
         }
         return out.toByteArray()
     }
-
 
     override fun decompress(b: ByteArray): ByteArray {
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
         val bitIn = BitInputStream(`in`)
 
-        val arithmeticCompress = object : AbstractArithmeticDecompress() {}
+        val arithmeticDecompress = object : AbstractArithmeticDecompress() {}
 
-        val freqs = arithmeticCompress.readFrequencies(bitIn)
-        arithmeticCompress.decompress(freqs, bitIn, ByteOutputWrapper(out))
+        val freqs = arithmeticDecompress.readFrequencies(bitIn)
+        arithmeticDecompress.decompress(freqs, bitIn, ByteOutputWrapper(out))
         return out.toByteArray()
     }
 }

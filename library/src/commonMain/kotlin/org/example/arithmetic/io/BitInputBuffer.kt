@@ -20,7 +20,7 @@ public class BitInputBuffer (buffer: ByteArray) : AbstractBitInput<ByteArray>(bu
     private var position = 0
 
     override fun readImpl(): Int {
-        return input[position++].toInt().and(0xFF)
+        return input[position++].toInt().and(0xFF) // if(position < input.size) input[position++].toInt().and(0xFF) else -1
     }
 
     override fun closeImpl() {
