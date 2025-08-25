@@ -20,12 +20,14 @@
  */
 package org.example.arithmetic
 
+import org.example.arithmetic.io.BitOutput
+
 /**
  * Encodes symbols and writes to an arithmetic-coded bit stream. Not thread-safe.
- * @see ArithmeticDecoder
+ * @see org.example.arithmetic.ArithmeticDecoder
  */
-public class ArithmeticEncoder public constructor(numBits: Int, out: BitOutputStream) : ArithmeticCoderBase(numBits) {
-    private val output: BitOutputStream
+public class ArithmeticEncoder public constructor(numBits: Int, out: BitOutput) : ArithmeticCoderBase(numBits) {
+    private val output: BitOutput
 
     // Number of saved underflow bits. This value can grow without bound,
     // so a truly correct implementation would use a BigInteger.
@@ -92,7 +94,7 @@ public class ArithmeticEncoder public constructor(numBits: Int, out: BitOutputSt
 
 
     override fun underflow() {
-        if (numUnderflow == Integer.MAX_VALUE) throw ArithmeticException("Maximum underflow reached")
+        if (numUnderflow == Int.MAX_VALUE) throw ArithmeticException("Maximum underflow reached")
         numUnderflow++
     }
 }
