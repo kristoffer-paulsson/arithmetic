@@ -72,8 +72,10 @@ public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) :
         val range: Long = high - low + 1
         val offset: Long = code - low
         val value = ((offset + 1) * total - 1) / range
-        if (value * range / total > offset) throw AssertionError()
-        if (value !in 0..<total) throw AssertionError()
+        //if (value * range / total > offset) throw AssertionError()
+        check(value * range / total <= offset)
+        //if (value !in 0..<total) throw AssertionError()
+        check(value in 0 until total)
 
 
         // A kind of binary search. Find highest symbol such that freqs.getLow(symbol) <= value.
