@@ -46,7 +46,8 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
 
     public override fun getTotal(): Int {
         val result: Int = freqTable.getTotal()
-        if (result < 0) throw AssertionError("Negative total frequency")
+        // if (result < 0) throw AssertionError("Negative total frequency")
+        check(result >= 0) { "Negative total frequency" }
         return result
     }
 
@@ -54,11 +55,13 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
         if (isSymbolInRange(symbol)) {
             val low: Int = freqTable.getLow(symbol)
             val high: Int = freqTable.getHigh(symbol)
-            if (!(low in 0..high && high <= freqTable.getTotal())) throw AssertionError("Symbol low cumulative frequency out of range")
+            // if (!(low in 0..high && high <= freqTable.getTotal())) throw AssertionError("Symbol low cumulative frequency out of range")
+            check(low in 0..high && high <= freqTable.getTotal()) { "Symbol low cumulative frequency out of range" }
             return low
         } else {
             freqTable.getLow(symbol)
-            throw AssertionError("IllegalArgumentException expected")
+            throw IllegalArgumentException()
+            //throw AssertionError("IllegalArgumentException expected")
         }
     }
 
