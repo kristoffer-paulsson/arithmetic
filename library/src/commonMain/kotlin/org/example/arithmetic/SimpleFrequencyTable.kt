@@ -30,7 +30,7 @@ public class SimpleFrequencyTable : FrequencyTable {
 
     // cumulative[i] is the sum of 'frequencies' from 0 (inclusive) to i (exclusive).
     // Initialized lazily. When this is not null, the data is valid.
-    private var cumulative: IntArray?
+    private var cumulative: IntArray = intArrayOf()
 
     // Always equal to the sum of 'frequencies'.
     private var total: Int
@@ -54,7 +54,7 @@ public class SimpleFrequencyTable : FrequencyTable {
             require(x >= 0) { "Negative frequency" }
             total = Math.addExact(x, total)
         }
-        cumulative = null
+        cumulative = intArrayOf()
     }
 
     /**
@@ -77,7 +77,7 @@ public class SimpleFrequencyTable : FrequencyTable {
             frequencies[i] = x
             total = Math.addExact(x, total)
         }
-        cumulative = null
+        cumulative = intArrayOf()
     }
 
     /**
@@ -116,7 +116,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         check(temp >= 0)
         total = Math.addExact(temp, freq)
         frequencies[symbol] = freq
-        cumulative = null
+        cumulative = intArrayOf()
     }
 
     /**
@@ -129,7 +129,7 @@ public class SimpleFrequencyTable : FrequencyTable {
         if (frequencies[symbol] == Int.MAX_VALUE) throw ArithmeticException("Arithmetic overflow")
         total = Math.addExact(total, 1)
         frequencies[symbol]++
-        cumulative = null
+        cumulative = intArrayOf()
     }
 
     /**
@@ -150,8 +150,8 @@ public class SimpleFrequencyTable : FrequencyTable {
      */
     public override fun getLow(symbol: Int): Int {
         checkSymbol(symbol)
-        if (cumulative == null) initCumulative()
-        return cumulative!![symbol]
+        if (cumulative.isEmpty()) initCumulative()
+        return cumulative[symbol]
     }
 
     /**
@@ -163,8 +163,8 @@ public class SimpleFrequencyTable : FrequencyTable {
      */
     public override fun getHigh(symbol: Int): Int {
         checkSymbol(symbol)
-        if (cumulative == null) initCumulative()
-        return cumulative!![symbol + 1]
+        if (cumulative.isEmpty()) initCumulative()
+        return cumulative[symbol + 1]
     }
 
     // Recomputes the array of cumulative symbol frequencies.
@@ -175,7 +175,7 @@ public class SimpleFrequencyTable : FrequencyTable {
             // This arithmetic should not throw an exception, because invariants are being maintained
             // elsewhere in the data structure. This implementation is just a defensive measure.
             sum = Math.addExact(frequencies[i], sum)
-            cumulative!![i + 1] = sum
+            cumulative[i + 1] = sum
         }
         //if (sum != total) throw AssertionError()
         check(sum == total)

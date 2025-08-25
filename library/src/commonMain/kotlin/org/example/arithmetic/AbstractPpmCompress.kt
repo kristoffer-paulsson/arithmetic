@@ -70,6 +70,7 @@ public abstract class AbstractPpmCompress {
         // context". When symbol 256 is produced at the order -1 context, it means "EOF".
         outer@ for (order in history.size downTo 0) {
             var ctx: PpmModel.Context = model.rootContext
+            //
             for (i in 0..<order) {
                 //if (ctx.subcontexts.isEmpty()) throw AssertionError()
                 check(ctx.subcontexts.isNotEmpty())
