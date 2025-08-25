@@ -51,7 +51,8 @@ public class PpmModel (order: Int, symbolLimit: Int, escapeSymbol: Int) {
         var i = 0
         for (sym in history) {
             val subctxs = ctx.subcontexts
-            if (subctxs.isEmpty()) throw AssertionError()
+            //if (subctxs.isEmpty()) throw AssertionError()
+            check(subctxs.isNotEmpty())
 
             if (subctxs[sym] == nullCtx) {
                 subctxs[sym] = Context(symbolLimit, i + 1 < modelOrder)
