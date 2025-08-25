@@ -43,7 +43,7 @@ public abstract class AbstractPpmCompress {
         // is 0 in all other contexts (which have non-negative order).
         val enc: ArithmeticEncoder = ArithmeticEncoder(32, out)
         val model: PpmModel = PpmModel(MODEL_ORDER, 257, 256)
-        var history = mutableListOf<Int>()
+        val history = mutableListOf<Int>()
 
         while (true) {
             // Read and encode one byte
@@ -54,9 +54,6 @@ public abstract class AbstractPpmCompress {
 
             if (model.modelOrder >= 1) {
                 // Prepend current symbol, dropping oldest symbol if necessary
-                /*if (history.size < model.modelOrder) history = history.copyOf(history.size + 1)
-                history.copyInto(history, 1, 0, history.size - 1)
-                history[0] = symbol*/
                 history.add(symbol)
                 if (history.size >= model.modelOrder) history.removeLast()
             }

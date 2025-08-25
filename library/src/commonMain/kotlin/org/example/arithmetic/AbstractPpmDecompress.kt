@@ -39,7 +39,7 @@ public abstract class AbstractPpmDecompress {
         // is 0 in all other contexts (which have non-negative order).
         val dec: ArithmeticDecoder = ArithmeticDecoder(32, inp)
         val model: PpmModel = PpmModel(MODEL_ORDER, 257, 256)
-        var history = mutableListOf<Int>()
+        val history = mutableListOf<Int>()
 
         while (true) {
             // Decode and write one byte
@@ -51,9 +51,6 @@ public abstract class AbstractPpmDecompress {
 
             if (model.modelOrder >= 1) {
                 // Prepend current symbol, dropping oldest symbol if necessary
-                /*if (history.size < model.modelOrder) history = Arrays.copyOf(history, history.size + 1)
-                System.arraycopy(history, 0, history, 1, history.size - 1)
-                history[0] = symbol*/
                 history.add(symbol)
                 if (history.size >= model.modelOrder) history.removeLast()
             }
