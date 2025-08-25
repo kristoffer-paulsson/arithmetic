@@ -20,7 +20,7 @@
  */
 package org.example.arithmetic.io
 
-public abstract class AbstarctBitInput<E> constructor(inp: E): BitInput {
+public abstract class AbstarctBitInput<E>(inp: E): BitInput {
 
     protected val input: E = inp
 

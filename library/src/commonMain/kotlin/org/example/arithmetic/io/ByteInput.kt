@@ -21,7 +21,6 @@ public interface ByteInput {
     /**
      * Reads and returns one byte, or -1 on end of stream.
      * @return the byte read as an integer in the range 0 to 255, or -1 on end of stream
-     * @throws java.io.IOException if an I/O exception occurred
      */
     public fun read(): Int
 }
