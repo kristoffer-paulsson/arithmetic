@@ -17,4 +17,8 @@
 package org.example.arithmetic.io
 
 public interface BitOutput {
+
+    public fun write(b: Int)
+
+    public fun close()
 }
