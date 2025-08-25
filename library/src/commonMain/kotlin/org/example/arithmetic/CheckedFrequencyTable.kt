@@ -37,8 +37,10 @@ public class CheckedFrequencyTable public constructor(freq: FrequencyTable) : Fr
 
     public override fun get(symbol: Int): Int {
         val result: Int = freqTable.get(symbol)
-        if (!isSymbolInRange(symbol)) throw AssertionError("IllegalArgumentException expected")
-        if (result < 0) throw AssertionError("Negative symbol frequency")
+        require(isSymbolInRange(symbol)) { "Symbol out of range" }
+        // if (!isSymbolInRange(symbol)) throw AssertionError("IllegalArgumentException expected")
+        check(result >= 0) { "Negative symbol frequency" }
+        //if (result < 0) throw AssertionError("Negative symbol frequency")
         return result
     }
 
