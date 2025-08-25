@@ -15,7 +15,7 @@ import java.io.IOException
 import java.io.InputStream
 
 /**
- * Tests [AbstractPpmCompress] coupled with [PpmDecompress].
+ * Tests [AbstractPpmCompress] coupled with [AbstractPpmDecompress].
  */
 class PpmCompressTest : ArithmeticCodingTest() {
     @Throws(IOException::class)
@@ -34,7 +34,8 @@ class PpmCompressTest : ArithmeticCodingTest() {
     override fun decompress(b: ByteArray): ByteArray {
         val `in`: InputStream = ByteArrayInputStream(b)
         val out = ByteArrayOutputStream()
-        PpmDecompress.decompress(BitInputStream(`in`), out)
+        val ppmDecompress = object : AbstractPpmDecompress() {}
+        ppmDecompress.decompress(BitInputStream(`in`), ByteOutputWrapper(out))
         return out.toByteArray()
     }
 }
