@@ -82,7 +82,7 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
      * @throws IllegalArgumentException if stateSize is outside the range [1, 62]
      */
     init {
-        require(1 <= numBits && numBits <= 62) { "State size out of range" }
+        require(numBits in 1..62) { "State size out of range" }
         numStateBits = numBits
         fullRange = 1L shl numStateBits
         halfRange = fullRange ushr 1 // Non-zero
@@ -120,7 +120,7 @@ public abstract class ArithmeticCoderBase public constructor(numBits: Int) {
         // State check
         if (low >= high || (low and stateMask) != low || (high and stateMask) != high) throw AssertionError("Low or high out of range")
         val range = high - low + 1
-        if (!(minimumRange <= range && range <= fullRange)) throw AssertionError("Range out of range")
+        if (range !in minimumRange..fullRange) throw AssertionError("Range out of range")
 
 
         // Frequency table values check
