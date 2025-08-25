@@ -20,7 +20,7 @@
  */
 package org.example.arithmetic
 
-import org.example.arithmetic.io.AbstarctBitInput
+import org.example.arithmetic.io.AbstractBitInput
 
 import java.io.InputStream
 
@@ -30,7 +30,7 @@ import java.io.InputStream
  * Mutable and not thread-safe.
  * @see BitOutputStream
  */
-public class BitInputStream public constructor(inp: InputStream) : AbstarctBitInput<InputStream>(inp), AutoCloseable {
+public class BitInputStream public constructor(inp: InputStream) : AbstractBitInput<InputStream>(inp), AutoCloseable {
 
     override fun readImpl(): Int {
         return input.read()
