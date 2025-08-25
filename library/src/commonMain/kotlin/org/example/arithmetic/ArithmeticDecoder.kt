@@ -86,12 +86,15 @@ public class ArithmeticDecoder public constructor(numBits: Int, inp: BitInput) :
             if (freqs.getLow(middle) > value) end = middle
             else start = middle
         }
-        if (start + 1 != end) throw AssertionError()
+        // if (start + 1 != end) throw AssertionError()
+        check(start + 1 == end)
 
         val symbol = start
-        if (!(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)) throw AssertionError()
+        //if (!(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)) throw AssertionError()
+        check(freqs.getLow(symbol) * range / total <= offset && offset < freqs.getHigh(symbol) * range / total)
         update(freqs, symbol)
-        if (code !in low..high) throw AssertionError("Code out of range")
+        //if (code !in low..high) throw AssertionError("Code out of range")
+        check(code in low..high) { "Code out of range" }
         return symbol
     }
 
